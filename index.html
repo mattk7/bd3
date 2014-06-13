@@ -1,7 +1,10 @@
 <html>
 
     <head>
-        <script src="libs/d3.min.js"></script>
+        <!--<script src="libs/d3.min.js"></script>-->
+        <script src="/home/orion/Desktop/BigDive/2014_06_12/Mored3/libs/d3.min.js"></script>
+
+        <!--<link rel="stylesheet" href="css/styles.css" />-->
     </head>
     
     <body>
@@ -64,8 +67,19 @@
         </select>        
         
         
-        <svg height="5000" width="5000"></svg>
+        <svg></svg>
         <script>
+            var XScreen = window.screen.availWidth
+            var YScreen = window.screen.availHeight
+            var MarginPct = 0.025
+            var xMargin = MarginPct*XScreen
+            var yMargin = MarginPct*YScreen
+            
+            var FigureWidth = XScreen - 2*xMargin
+            var FigureHeight = YScreen - 2*yMargin
+            
+            
+
 
         var upVar = "GDP (current US$)";
         var downVar = 'Medals';
@@ -84,6 +98,8 @@
                 console.log(data);
         
                 var svg = d3.select('svg')
+                    .attr('width', FigureWidth)
+                    .attr('height', FigureHeight)
                     .selectAll('g')
                     .data(data, function(d){return d.key;})
                     //.data(data)
@@ -109,7 +125,7 @@
                     return d.value[downVar] || 0;  
                 })                
                 
-                var lenRange = 300.0;
+                var lenRange = FigureHeight/2;
 
                 var upMap = d3.scale.linear()
                                 .domain([upMin, upMax])
@@ -118,8 +134,9 @@
                 var downMap = d3.scale.linear()
                                 .domain([downMin, downMax])
                                 .range([0, lenRange]);
-                var startY = lenRange*1.05;
-                var startX = 10;
+                var startY = lenRange*0.99;
+                var startX = 10+xMargin;
+                var barWidth = FigureWidth/data.length
 
                 var upRect = groups
                     .append('rect')
@@ -139,12 +156,12 @@
                 svg.select('.up')
                     .attr("fill", "red")
                     .attr("x", startX)
-	                .attr("width", startX)
+	                .attr("width", barWidth)
                     .attr("opacity", 0.5)                    
                     .attr("id", function(d) { return d.key; })
                     .transition()
                     .duration(1000)
-                    .attr('transform', function(d, i){return 'translate(' + i*startX + ',' + startY + ')'; })
+                    .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
 	                .attr("height", function(d) { return upMap(d.value[upVar] || 0); })
 	                .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
             
@@ -152,12 +169,12 @@
                 svg.select('.down')
 	                .attr("fill", "steelblue")
                     .attr("x", startX)
-                    .attr("width", startX)
+                    .attr("width", barWidth)
                     .attr("opacity", 0.5)
                     .attr("id", function(d) { return d.key; })
                     .transition()
                     .duration(1000)
-                    .attr('transform', function(d, i){return 'translate(' + i*startX + ',' + startY + ')'; })
+                    .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
 	                .attr("height", function(d) { return downMap(d.value[downVar] || 0); })
             
             
