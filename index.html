@@ -1,0 +1,178 @@
+<html>
+
+    <head>
+        <script src="libs/d3.min.js"></script>
+    </head>
+    
+    <body>
+        <button id="btn">Flip</button>
+        <svg height="5000" width="5000"></svg>
+        <script>
+            
+        function update(upVar, downVar) { 
+            
+            d3.json('./Data/data_joined.json', function(json_data){
+                var data = d3.entries(json_data);
+                              
+                
+                     data.sort(function(a, b){
+                         return d3.descending(a.value[upVar], b.value[upVar])
+                     }) 
+                       
+                //console.log(data);
+        
+                var animation = d3.select('svg')
+                    .selectAll('rect')
+                    .data(data)
+                    
+                animation
+                    //.exit()
+                    //.transition()
+                    //.duration(300)
+                    //.style('opacity', 0)
+                    .remove()      
+                    .exit()
+                    .remove()
+
+                
+                var upMin = d3.min(data, function(d){
+                    return d.value[upVar];  
+                })                
+                
+                var upMax = d3.max(data, function(d){
+                    return d.value[upVar];  
+                })                
+                
+                var downMin = d3.min(data, function(d){
+                    return d.value[downVar];  
+                })                
+                
+                var downMax = d3.max(data, function(d){
+                    return d.value[downVar];  
+                })                
+                
+                var lenRange = 100.0;
+
+                var upMap = d3.scale.linear()
+                                .domain([upMin, upMax])
+                                .range([0, lenRange]);
+                                
+                var downMap = d3.scale.linear()
+                                .domain([downMin, downMax])
+                                .range([0, lenRange]);
+                var startY = 200;
+                var startX = 10;
+                animation.enter().append('rect')
+                    .attr("id", function(d) { return d.key; })
+                    .attr("class", "up")
+                    .attr("fill", "red")
+                    .attr('transform', function(d, i){return 'translate(' + i*startX + ',' + startY + ')'; })
+	                .attr("height", function(d) { return upMap(d.value[upVar]); })
+	                .attr("y", function(d) { return -upMap(d.value[upVar]); })
+                    .attr("x", startX)
+	                .attr("width", startX)
+                    .attr("opacity", 0.5)
+                      
+                animation.enter().append('rect')
+                    .attr("id", function(d) { return d.key; })
+                    .attr("class", "down")
+	                .attr("fill", "steelblue")
+                    .attr('transform', function(d, i){return 'translate(' + i*startX + ',' + startY + ')'; })
+	                .attr("height", function(d) { return downMap(d.value[downVar]); })
+                    .attr("x", startX)
+                    //.attr('y', function(d) { return downMap(d.value[downVar]); })
+                    .attr("width", startX)
+                    .attr("opacity", 0.5)
+            
+                              
+            });
+        }
+            var upVar = 'Medals';
+            //var downVar = 'GINI Index';
+            var downVar = 'Population (Total)';
+            
+            update(upVar, downVar);            
+            
+            d3.select('#btn')
+                .on('click', function(){
+                    var upVar_ = downVar;
+                    var downVar_ = upVar;                    
+                    update(upVar_, downVar_)
+                })
+                
+/*
+            d3.csv('data/olympics_2012.csv', function(data){
+                
+                console.log(data)
+                
+                var mydata = d3.nest()
+                                .key(function(d){
+                                    return d.Country;
+                                })
+                                .sortKeys(d3.ascending)
+                                .entries(data)
+                
+                // this function will sort the main array based on number of athletes.
+                mydata.sort(function(a, b){
+                    return d3.ascending(a.values.length, b.values.length)
+                })
+                
+                var countries = d3.select('svg')
+                    .selectAll('g')
+                    .data(mydata)
+                    .enter()
+                    .append('g')
+                    .attr('transform', function(d, i){
+                        return 'translate(0, ' + i*21 + ')';
+                    })
+                
+                countries.append('rect')
+                    .attr('width', 50)
+                    .attr('height', 20)
+                
+                
+                var min = d3.min(mydata, function(d){
+                    return d3.min(d.values, function(c){
+                        return c.Age;  
+                    })
+                })
+                console.log(min)
+                
+                var max = d3.max(mydata, function(d){
+                    return d3.max(d.values, function(c){
+                        return c.Age;  
+                    })
+                })
+                console.log(max)
+                
+                var mapCol = d3.scale.linear()
+                                .domain([min, max])
+                                .range(['#fff', '#000'])
+                
+                
+                countries.selectAll('circle')
+                    .data(function(d, i){
+                        return d.values  
+                    })
+                    .enter()
+                    .append('circle')
+                    .attr('r', 3)
+                    .attr('cx', function(d, i){
+                        return 60 + i*7;  
+                    })
+                    .attr('cy', 10)
+                    .style('fill', function(d, i){
+                        return mapCol( d.Age )
+                    })
+                
+                
+                
+            });
+*/
+        
+        </script>
+    </body>
+
+    
+
+</html>
