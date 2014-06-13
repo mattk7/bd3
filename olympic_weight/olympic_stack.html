@@ -226,8 +226,6 @@ function plotter(stackedData) {
         .remove()
 }
             
-            // Select the first (and hopefully the only) <svg class="stack"> element
-            var svg = d3.select('svg.stack');
             
 var svg = d3.select("svg")
     .attr("width", w + m[1] + m[3])
@@ -251,8 +249,6 @@ svg.append("svg:clipPath")
 var areaContainer = svg.append('g').attr('class', 'areacontainer')
 createAxis()
             
-            svg.attr('height',h)
-            svg.attr('width',h)
             
 d3.csv("data/hist.csv", function(data) {
     
@@ -349,23 +345,12 @@ svg.on("click", function() {
 
             
 
-                var axisY = d3.svg.axis()
-                    .scale(mapy)
-                    .orient('right')
-                    .ticks(5)
-                    .tickSize(1)
-                    .tickSubdivide(true)
-                    .tickFormat(format)
 
 
-                svg.append('g').call(axisX)
-                svg.append('g').call(axisY)
-            
-            
             ///////////////////////////////////
-            
+
             // Importing the data from scratch
-            });
+            
             var data = d3.csv('data/olympics_2012_clean.csv', function(data){
             ///////////////
             
@@ -437,14 +422,15 @@ svg.on("click", function() {
                             widget_sports.push(selected_data)        // else push new nation in array.
                         }
                         update_widgets(widget_sports)       // Update widget view
+                        update_stack(widget_sports)
                         })
 
-//            d3.select('.widget_reset')
-//                .on('click', function(){
-//                    widget_sports = []
-//                    update_widgets(widget_sports)
-//                    update_stack(widget_sports)
-//                    })
+            d3.select('.widget_reset')
+                .on('click', function(){
+                    widget_sports = []
+                    update_widgets(widget_sports)
+                    update_stack(widget_sports)
+                    })
             });
             
             
