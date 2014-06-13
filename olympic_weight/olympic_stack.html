@@ -368,10 +368,11 @@ svg.on("click", function() {
             });
             var data = d3.csv('data/olympics_2012_clean.csv', function(data){
             ///////////////
-                var data_by_sport = d3.nest()
-                    .key(function(d){
-                        return d.Sport;
-                    })
+            
+            	// Nest the array in two levels
+                var data_by_sport_and_gender = d3.nest()
+                    .key(function(d){return d.Sport;})
+                    .key(function(d){return d.Sex;})
                     .entries(data)
                 
                 function update_widgets(widget_sports){
@@ -401,7 +402,7 @@ svg.on("click", function() {
                 
                 d3.select('#buttons')
                     .selectAll('button.widget_trigger')
-                    .data(data_by_sport)
+                    .data(data_by_sport_and_gender)
                     .enter()
                     .append('button')
                     .attr('class', 'widget_trigger')
@@ -425,7 +426,7 @@ svg.on("click", function() {
                 d3.selectAll('.widget_trigger')
                     .on('click', function(){
                         var sport = this.id
-                        selected_data = data_by_sport
+                        selected_data = data_by_sport_and_gender
                             .filter(function(d){
                                 return (d.key == sport )
                             }).pop()
