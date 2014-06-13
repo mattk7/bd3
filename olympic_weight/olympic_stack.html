@@ -170,8 +170,63 @@ var area = d3.svg.area()
     .y0(function(d){return y(d.y0)   })
     .y1(function(d){return y(d.y0+d.y) })
     .interpolate('cardinal');
+            
+function createAxis(){
+    svg.append("svg:g")
+      .attr("class", "x grid")
+      .attr("transform", "translate(0," + h + ")")
+      .call(xAxis.tickSubdivide(0).tickSize(-h));
 
+    svg.append("svg:g")
+      .attr("class", "y grid")
+      .attr("transform", "translate(0,0)")
+      .call(yAxis.tickSubdivide(1).tickSize(-w));
 
+    svg.append("svg:g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + h + ")")
+      .call(xAxis.tickSubdivide(0).tickSize(6));
+
+    svg.append("svg:g")
+      .attr("class", "y axis")
+      .call(yAxis.tickSubdivide(0).tickSize(6));
+}
+
+// The plotter
+function plotter(stackedData) {
+    console.log(stackedData)
+    index_last_stack=stackedData.length-1
+    y_dom = [0, 1.1* d3.max(stackedData[index_last_stack].values, function(d) { return d.y0+d.y; })]
+     
+    x.domain(x_dom);
+    y.domain(y_dom);
+
+    svg.select('.y.grid').call(xAxis.tickSubdivide(0).tickSize(-h));
+    svg.select('.y.axis').transition().call(yAxis.tickSubdivide(0).tickSize(6));
+     
+                    
+    var gen = areaContainer.selectAll("path.generator")
+        //.transition().duration(d3.event.altKey ? 7500 : 750);
+      .data(stackedData, function(d){
+          return d.key
+      })
+    
+    gen.enter()
+        .append("svg:path")
+        .attr("class", "generator")
+        
+    gen.style("fill",   function(d,i){return colors(i)})
+        .attr("clip-path", "url(#clip)")
+        .transition()
+        .attr("d", function(d){
+            return area(d.values)
+        })
+    
+    gen.exit()
+        .remove()
+}
+            
+            
 var svg = d3.select("svg")
     .attr("width", w + m[1] + m[3])
     .attr("height", h + m[0] + m[2])
@@ -191,8 +246,10 @@ svg.append("svg:clipPath")
     .attr("width", x(1) - x(0))
     .attr("height", y(0) - y(1));
 
-
-
+var areaContainer = svg.append('g').attr('class', 'areacontainer')
+createAxis()
+            
+            
 d3.csv("data/hist.csv", function(data) {
     
     // And then was the data...
@@ -201,7 +258,7 @@ d3.csv("data/hist.csv", function(data) {
         d.y = +d.y; // casting to integer
     });
 
-    var sportWeight = d3.nest()
+    sportWeight = d3.nest()
         .key(function(d){
             return d.Sport;
         })
@@ -210,16 +267,16 @@ d3.csv("data/hist.csv", function(data) {
     console.log(colors(0))
     
     // Stack
-    var stack = d3.layout.stack()
+    stack = d3.layout.stack()
         .offset("zero")
         .values(function(d){
             return d.values;
         })
  
-    var stackValues = stack(sportWeight)
+    stackValues = stack(sportWeight)
     console.log(stackValues)
   
-    index_last_stack=stackValues.length-1
+//    index_last_stack=stackValues.length-1
     console.log(stackValues.length) 
   
     minWeight = d3.min(data, function(d){ return d.x; });
@@ -230,7 +287,10 @@ d3.csv("data/hist.csv", function(data) {
   x_dom = [minWeight, maxWeight]
   
   x_dom_zoom = [40, 120]; //just a small part of domain
-  y_dom = [0, 1.1* d3.max(stackValues[index_last_stack].values, function(d) { return d.y0+d.y; })]
+  
+    plotter(stackValues)
+    /*
+    y_dom = [0, 1.1* d3.max(stackValues[index_last_stack].values, function(d) { return d.y0+d.y; })]
   
   x.domain(x_dom);
   y.domain(y_dom);
@@ -263,8 +323,9 @@ d3.csv("data/hist.csv", function(data) {
         .attr("d", function(d){
                         return area(d.values)
                     })
-
+                    */
 });
+            
             
 // On click, update the x-axis.
 svg.on("click", function() {
@@ -299,7 +360,7 @@ svg.on("click", function() {
                 .entries(data)
 
             function update_widgets(widget_sports){
-                console.log(widget_sports)
+//                console.log(widget_sports)
                 // Select all present and future <g class="widget"> objects
                 var widgets = svg.selectAll('g.widget')
                     .data(widget_sports)
@@ -360,14 +421,41 @@ svg.on("click", function() {
                         widget_sports.push(selected_data)        // else push new nation in array.
                     }
                     update_widgets(widget_sports)       // Update widget view
+                    update_stack(widget_sports)
+
                     })
 
-            d3.select('.widget_reset')
-                .on('click', function(){
-                    widget_sports = []
-                    update_widgets(widget_sports)
-                    })
+//            d3.select('.widget_reset')
+//                .on('click', function(){
+//                    widget_sports = []
+//                    update_widgets(widget_sports)
+//                    update_stack(widget_sports)
+//                    })
             });
+            
+            
+// --------- Update Distribution ---------------
+
+function update_stack(widget_sports){
+//    var t = svg.transition().duration(d3.event.altKey ? 7500 : 750);
+    var selectedWeight = sportWeight.filter(function(d){
+        selectedKeys=[]
+        for(s in widget_sports){
+            selectedKeys.push(widget_sports[s].key)
+        }
+        return ( selectedKeys.indexOf(d.key) > -1 )
+        })
+    
+    console.log('selectedWeight:', selectedWeight);
+    if(selectedKeys.length != 0) {
+        plotter(stack(selectedWeight));
+    }
+    else {
+        plotter(stackValues);
+    }
+    }
+            
+
         </script>
     </body>
 </html>
