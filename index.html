@@ -6,11 +6,69 @@
     
     <body>
         <button id="btn">Flip</button>
+        
+        <select id="TopVariable">
+            <option value="GDP (current US$)">GDP (current US$)</option>
+            <option value="GNI per capita, PPP (current international $)">GNI per capita, PPP (current international $)</option>
+            <option value="GDP per capita (current US$)">GDP per capita (current US$)</option>
+            <option value="Population (Total)">Population (Total)</option>
+            <option value="GNI per capita, Atlas method (current US$)">GNI per capita, Atlas method (current US$)</option>
+            <option value="Internet users (per 100 people)">Internet users (per 100 people)</option>
+        </select>
+        <select id="BottomVariable">
+            <option value="Medals">Medals</option>
+            <option value="Athletes">Athletes</option>
+            <option value="Athletes_Pop">Athletes_Pop</option>
+            <option value="Athletes_logPop">Athletes_logPop</option>
+            <option value="Bronze">Bronze</option>
+            <option value="Female_Athletes">Female_Athletes</option>
+            <option value="Female_Athletes_Pop">Female_Athletes_Pop</option>
+            <option value="Female_Athletes_logPop">Female_Athletes_logPop</option>
+            <option value="Female_Bronze">Female_Bronze</option>
+            <option value="Female_Gold">Female_Gold</option>
+            <option value="Female_Medalists">Female_Medalists</option>
+            <option value="Female_Medalists_Pop">Female_Medalists_Pop</option>
+            <option value="Female_Medalists_TeamSize">Female_Medalists_TeamSize</option>
+            <option value="Female_Medalists_logPop">Female_Medalists_logPop</option>
+            <option value="Female_Medals">Female_Medals</option>
+            <option value="Female_Medals_Medalists">Female_Medals_Medalists</option>
+            <option value="Female_Medals_Pop">Female_Medals_Pop</option>
+            <option value="Female_Medals_TeamSize">Female_Medals_TeamSize</option>
+            <option value="Female_Medals_logPop">Female_Medals_logPop</option>
+            <option value="Female_Silver">Female_Silver</option>
+            <option value="Gold">Gold</option>
+            <option value="Male_Athletes">Male_Athletes</option>
+            <option value="Male_Athletes_Pop">Male_Athletes_Pop</option>
+            <option value="Male_Athletes_logPop">Male_Athletes_logPop</option>
+            <option value="Male_Bronze">Male_Bronze</option>
+            <option value="Male_Gold">Male_Gold</option>
+            <option value="Male_Medalists">Male_Medalists</option>
+            <option value="Male_Medalists_Pop">Male_Medalists_Pop</option>
+            <option value="Male_Medalists_TeamSize">Male_Medalists_TeamSize</option>
+            <option value="Male_Medalists_logPop">Male_Medalists_logPop</option>
+            <option value="Male_Medals">Male_Medals</option>
+            <option value="Male_Medals_Medalists">Male_Medals_Medalists</option>
+            <option value="Male_Medals_Pop">Male_Medals_Pop</option>
+            <option value="Male_Medals_TeamSize">Male_Medals_TeamSize</option>
+            <option value="Male_Medals_logPop">Male_Medals_logPop</option>
+            <option value="Male_Silver">Male_Silver</option>
+            <option value="Medalists">Medalists</option>
+            <option value="Medalists_Pop">Medalists_Pop</option>
+            <option value="Medalists_TeamSize">Medalists_TeamSize</option>
+            <option value="Medalists_logPop">Medalists_logPop</option>
+            <option value="Medals_Medalists">Medals_Medalists</option>
+            <option value="Medals_Pop">Medals_Pop</option>
+            <option value="Medals_TeamSize">Medals_TeamSize</option>
+            <option value="Medals_logPop">Medals_logPop</option>
+            <option value="Silver">Silver</option>
+        </select>        
+        
+        
         <svg height="5000" width="5000"></svg>
         <script>
 
-        var upVar = 'Medals';
-        var downVar = 'Population (Total)';
+        var upVar = "GDP (current US$)";
+        var downVar = 'Medals';
 
             
        
@@ -103,7 +161,7 @@
 	                .attr("height", function(d) { return downMap(d.value[downVar] || 0); })
             
             
-            return [downVar, upVar]
+            return [upVar, downVar]
             
         }
             var Vars = update(upVar, downVar);
@@ -111,9 +169,21 @@
             
             d3.select('#btn')
                 .on('click', function(){
-                     Vars = update(Vars[0], Vars[1])
+                     Vars = update(Vars[1], Vars[0])
                      console.log(Vars);
                 })
+
+            
+            d3.select("#TopVariable").on("change", function(){                                    
+                                         Vars = update(d3.event.target.value, Vars[1])                                        
+                                    });
+            
+            d3.select("#BottomVariable").on("change", function(){                                    
+                                         Vars = update(Vars[0] , d3.event.target.value)                                        
+                                    });
+        
+            
+            
                               
             });
             
