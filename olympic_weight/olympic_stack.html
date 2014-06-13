@@ -226,6 +226,8 @@ function plotter(stackedData) {
         .remove()
 }
             
+            // Select the first (and hopefully the only) <svg class="stack"> element
+            var svg = d3.select('svg.stack');
             
 var svg = d3.select("svg")
     .attr("width", w + m[1] + m[3])
@@ -249,6 +251,8 @@ svg.append("svg:clipPath")
 var areaContainer = svg.append('g').attr('class', 'areacontainer')
 createAxis()
             
+            svg.attr('height',h)
+            svg.attr('width',h)
             
 d3.csv("data/hist.csv", function(data) {
     
@@ -345,85 +349,95 @@ svg.on("click", function() {
 
             
 
+                var axisY = d3.svg.axis()
+                    .scale(mapy)
+                    .orient('right')
+                    .ticks(5)
+                    .tickSize(1)
+                    .tickSubdivide(true)
+                    .tickFormat(format)
 
 
-            ///////////////////////////////////
-
-            // Importing the data from scratch
+                svg.append('g').call(axisX)
+                svg.append('g').call(axisY)
             
+            
+            ///////////////////////////////////
+            
+            // Importing the data from scratch
+            });
             var data = d3.csv('data/olympics_2012_clean.csv', function(data){
             ///////////////
-            var data_by_sport = d3.nest()
-                .key(function(d){
-                    return d.Sport;
-                })
-                .entries(data)
+            
+            	// Nest the array in two levels
+                var data_by_sport_and_gender = d3.nest()
+                    .key(function(d){return d.Sport;})
+                    .key(function(d){return d.Sex;})
+                    .entries(data)
+                
+                function update_widgets(widget_sports){
+                    console.log(widget_sports)
+                    // Select all present and future <g class="widget"> objects
+                    var widgets = svg.selectAll('g.widget')
+                        .data(widget_sports)
 
-            function update_widgets(widget_sports){
-//                console.log(widget_sports)
-                // Select all present and future <g class="widget"> objects
-                var widgets = svg.selectAll('g.widget')
-                    .data(widget_sports)
+                    // if widget exists in the canvas and we don't want it anymore
+                    widgets.exit()
+                        .remove()
 
-                // if widget exists in the canvas and we don't want it anymore
-                widgets.exit()
-                    .remove()
+                    // if not exists then create
+                    widgets.enter()
+                        .append('g')
+                        .attr('class', 'widget')
 
-                // if not exists then create
-                widgets.enter()
-                    .append('g')
-                    .attr('class', 'widget')
-
-                // Append a nice rectangle in every widget
-                widgets.append('rect')
-                    .attr('width', 50)
-                    .attr('height', 20)
-                    .attr('fill', 'orange')
-            }
-
-            // This array contains the objects representing the nations the user selected.
-            var widget_sports = []
-
-            d3.select('#buttons')
-                .selectAll('button.widget_trigger')
-                .data(data_by_sport)
-                .enter()
-                .append('button')
-                .attr('class', 'widget_trigger')
-                .attr('id', function(d){
-                    return d.key
-                })
-                .text(function(d){
-                    return d.key
-                })
-
-            d3.select('#buttons')
-                .selectAll('button.widget_reset')
-                .data(['Reset'])
-                .enter()
-                .append('button')
-                .attr('class', 'widget_reset')
-                .text(function(d){
-                    return d
-                })
-
-            d3.selectAll('.widget_trigger')
-                .on('click', function(){
-                    var sport = this.id
-                    selected_data = data_by_sport
-                        .filter(function(d){
-                            return (d.key == sport )
-                        }).pop()
-                    var i = widget_sports.indexOf(selected_data) // Look for nation in array.
-                    if (i > -1) {                                 // If nation in array...
-                        widget_sports.splice(i, 1)               // ... pop it out.
-                    } else {
-                        widget_sports.push(selected_data)        // else push new nation in array.
-                    }
-                    update_widgets(widget_sports)       // Update widget view
-                    update_stack(widget_sports)
-
+                    // Append a nice rectangle in every widget
+                    widgets.append('rect')
+                        .attr('width', 50)
+                        .attr('height', 20)
+                        .attr('fill', 'orange')
+                }
+            
+                // This array contains the objects representing the nations the user selected.
+                var widget_sports = []
+                
+                d3.select('#buttons')
+                    .selectAll('button.widget_trigger')
+                    .data(data_by_sport_and_gender)
+                    .enter()
+                    .append('button')
+                    .attr('class', 'widget_trigger')
+                    .attr('id', function(d){
+                        return d.key
                     })
+                    .text(function(d){
+                        return d.key
+                    })
+                
+                d3.select('#buttons')
+                    .selectAll('button.widget_reset')
+                    .data(['Reset'])
+                    .enter()
+                    .append('button')
+                    .attr('class', 'widget_reset')
+                    .text(function(d){
+                        return d
+                    })
+                
+                d3.selectAll('.widget_trigger')
+                    .on('click', function(){
+                        var sport = this.id
+                        selected_data = data_by_sport_and_gender
+                            .filter(function(d){
+                                return (d.key == sport )
+                            }).pop()
+                        var i = widget_sports.indexOf(selected_data) // Look for nation in array.
+                        if (i > -1) {                                 // If nation in array...
+                            widget_sports.splice(i, 1)               // ... pop it out.
+                        } else {
+                            widget_sports.push(selected_data)        // else push new nation in array.
+                        }
+                        update_widgets(widget_sports)       // Update widget view
+                        })
 
 //            d3.select('.widget_reset')
 //                .on('click', function(){
