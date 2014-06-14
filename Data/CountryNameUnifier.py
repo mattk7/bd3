@@ -1,14 +1,14 @@
 #!/usr/bin/python
 import csv
 
-ReferenceTableLines = open('MisMatchReferenceTable.txt','r').readlines()
+# Read in csv's and join.
 
 ReferenceTable = {}
-for line in ReferenceTableLines[1:]:
-	OlyName = line.replace('\n','').split('\t')[0]
+ReferenceLines = open('MisMatchReferenceTable.txt','r').readlines()
+for line in ReferenceLines:
+	OlyName = line.split('\t')[0]
 	WBName = line.replace('\n','').split('\t')[1]
 	ReferenceTable[OlyName] = WBName
-
 
 olyOut = open('olympics_2012_Clean.csv', 'w')
 oly_rows = csv.reader(open('olympics_2012.csv', 'r'), delimiter=',', quotechar='"')
