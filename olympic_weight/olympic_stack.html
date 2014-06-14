@@ -170,60 +170,55 @@ var area = d3.svg.area()
     .y0(function(d){return y(d.y0)   })
     .y1(function(d){return y(d.y0+d.y) })
     .interpolate('cardinal');
-            
-function createAxis(){
-    svg.append("svg:g")
-      .attr("class", "x grid")
-      .attr("transform", "translate(0," + h + ")")
-      .call(xAxis.tickSubdivide(0).tickSize(-h));
-
-    svg.append("svg:g")
-      .attr("class", "y grid")
-      .attr("transform", "translate(0,0)")
-      .call(yAxis.tickSubdivide(1).tickSize(-w));
-
-    svg.append("svg:g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + h + ")")
-      .call(xAxis.tickSubdivide(0).tickSize(6));
-
-    svg.append("svg:g")
-      .attr("class", "y axis")
-      .call(yAxis.tickSubdivide(0).tickSize(6));
-}
 
 // The plotter
 function plotter(stackedData) {
-    console.log(stackedData)
+//    console.log(stackedData)
     index_last_stack=stackedData.length-1
     y_dom = [0, 1.1* d3.max(stackedData[index_last_stack].values, function(d) { return d.y0+d.y; })]
      
     x.domain(x_dom);
     y.domain(y_dom);
 
-    svg.select('.y.grid').call(xAxis.tickSubdivide(0).tickSize(-h));
+    svg.select('.x.axis').transition().call(xAxis.tickSubdivide(0).tickSize(6));
+    svg.select('.x.grid').transition().call(xAxis.tickSubdivide(1).tickSize(-h));
+    svg.select('.y.grid').transition().call(yAxis.tickSubdivide(1).tickSize(-w));
     svg.select('.y.axis').transition().call(yAxis.tickSubdivide(0).tickSize(6));
      
                     
-    var gen = areaContainer.selectAll("path.generator")
-        //.transition().duration(d3.event.altKey ? 7500 : 750);
+    var gen = stackcontainer.selectAll("path.generator")
       .data(stackedData, function(d){
           return d.key
       })
-    
+           
     gen.enter()
         .append("svg:path")
         .attr("class", "generator")
-        
-    gen.style("fill",   function(d,i){return colors(i)})
-        .attr("clip-path", "url(#clip)")
+        .attr('opacity', 0)
+        .style("fill", '#eee' )
+    
+    gen.attr("clip-path", "url(#clip)")
         .transition()
+        .duration(1000)
+        .delay(function(d,i){
+            return 5*i;
+        })
+        .style("fill",   function(d,i){ return colors(i); } )
+        .attr('opacity', 1)        
         .attr("d", function(d){
             return area(d.values)
         })
+
     
+/////   DO THIS!!!!!!!!!!!!!!!!!!!!!
+// hover transitions
+//    http://bl.ocks.org/GerHobbelt/3480186
+//    http://bl.ocks.org/WillTurman/4631136
+
     gen.exit()
-        .remove()
+        .transition()
+        .duration(250)
+        .remove(); 
 }
             
             
@@ -246,10 +241,29 @@ svg.append("svg:clipPath")
     .attr("width", x(1) - x(0))
     .attr("height", y(0) - y(1));
 
-var areaContainer = svg.append('g').attr('class', 'areacontainer')
-createAxis()
+svg.append("svg:g")
+  .attr("class", "x grid")
+  .attr("transform", "translate(0," + h + ")")
+  .call(xAxis.tickSubdivide(0).tickSize(-h));
+
+svg.append("svg:g")
+  .attr("class", "y grid")
+  .attr("transform", "translate(0,0)")
+  .call(yAxis.tickSubdivide(1).tickSize(-w));
+
+svg.append("svg:g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + h + ")")
+  .call(xAxis.tickSubdivide(0).tickSize(6));
+
+svg.append("svg:g")
+  .attr("class", "y axis")
+  .call(yAxis.tickSubdivide(0).tickSize(6));
+
             
-            
+var stackcontainer = svg.append('g').attr('class', 'stackcontainer')
+
+
 d3.csv("data/hist.csv", function(data) {
     
     // And then was the data...
@@ -264,7 +278,7 @@ d3.csv("data/hist.csv", function(data) {
         })
         .entries(data);
 
-    console.log(colors(0))
+//    console.log(colors(0))
     
     // Stack
     stack = d3.layout.stack()
@@ -274,10 +288,9 @@ d3.csv("data/hist.csv", function(data) {
         })
  
     stackValues = stack(sportWeight)
-    console.log(stackValues)
   
 //    index_last_stack=stackValues.length-1
-    console.log(stackValues.length) 
+//    console.log(stackValues.length) 
   
     minWeight = d3.min(data, function(d){ return d.x; });
     maxWeight = d3.max(data, function(d){ return d.x; });
@@ -289,41 +302,6 @@ d3.csv("data/hist.csv", function(data) {
   x_dom_zoom = [40, 120]; //just a small part of domain
   
     plotter(stackValues)
-    /*
-    y_dom = [0, 1.1* d3.max(stackValues[index_last_stack].values, function(d) { return d.y0+d.y; })]
-  
-  x.domain(x_dom);
-  y.domain(y_dom);
-
-  svg.append("svg:g")
-      .attr("class", "x grid")
-      .attr("transform", "translate(0," + h + ")")
-      .call(xAxis.tickSubdivide(0).tickSize(-h));
-
-  svg.append("svg:g")
-      .attr("class", "y grid")
-      .attr("transform", "translate(0,0)")
-      .call(yAxis.tickSubdivide(1).tickSize(-w));
-
-  svg.append("svg:g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + h + ")")
-      .call(xAxis.tickSubdivide(0).tickSize(6));
-
-  svg.append("svg:g")
-      .attr("class", "y axis")
-      .call(yAxis.tickSubdivide(0).tickSize(6));
-
-  svg.selectAll("g.generator")
-      .data(stackValues)
-      .enter().append("svg:path")
-        .attr("class", "generator")
-        .style("fill",   function(d,i){return colors(i)})
-        .attr("clip-path", "url(#clip)")
-        .attr("d", function(d){
-                        return area(d.values)
-                    })
-                    */
 });
             
             
@@ -337,8 +315,8 @@ svg.on("click", function() {
   t.select("g.x.axis").call(xAxis.tickSubdivide(0).tickSize(6));
   t.select("g.y.axis").call(yAxis.tickSubdivide(0).tickSize(6));
   t.selectAll("path.generator").attr("d", function(d){
-                        return area(d.values)
-                    });
+      return area(d.values)
+  });
 });
 
 ///////________________________________________
@@ -357,11 +335,12 @@ svg.on("click", function() {
             	// Nest the array in two levels
                 var data_by_sport_and_gender = d3.nest()
                     .key(function(d){return d.Sport;})
-                    .key(function(d){return d.Sex;})
+                    //.key(function(d){return d.Sex;})
                     .entries(data)
                 
+                
                 function update_widgets(widget_sports){
-                    console.log(widget_sports)
+                    console.log('widget sport: ', widget_sports)
                     // Select all present and future <g class="widget"> objects
                     var widgets = svg.selectAll('g.widget')
                         .data(widget_sports)
@@ -451,7 +430,7 @@ function update_stack(widget_sports){
         plotter(stack(selectedWeight));
     }
     else {
-        plotter(stackValues);
+        plotter(stack(sportWeight));
     }
     }
             
