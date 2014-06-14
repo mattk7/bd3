@@ -1,186 +1,156 @@
 <html>
 
     <head>
-        <!--<script src="libs/d3.min.js"></script>-->
+        <script src="./libs/jquery-1.11.1.min.js"></script>
         <script src="./libs/d3.min.js"></script>
-
-        <!--<link rel="stylesheet" href="css/styles.css" />-->
-    </head>
-    
+        <script src="./libs/ui.js"></script>    
+        <link href="./css/styles.css" rel="stylesheet" />
+    </head>    
     <body>
-        <button id="btn">Flip</button>
-        
-        <select id="TopVariable">
-            <option value="GDP (current US$)">GDP (current US$)</option>
-            <option value="GNI per capita, PPP (current international $)">GNI per capita, PPP (current international $)</option>
-            <option value="GDP per capita (current US$)">GDP per capita (current US$)</option>
-            <option value="Population (Total)">Population (Total)</option>
-            <option value="GNI per capita, Atlas method (current US$)">GNI per capita, Atlas method (current US$)</option>
-            <option value="Internet users (per 100 people)">Internet users (per 100 people)</option>
-        </select>
-        <select id="BottomVariable">
-            <option value="Medals">Medals</option>
-            <option value="Athletes">Athletes</option>
-            <option value="Athletes_Pop">Athletes_Pop</option>
-            <option value="Athletes_logPop">Athletes_logPop</option>
-            <option value="Bronze">Bronze</option>
-            <option value="Female_Athletes">Female_Athletes</option>
-            <option value="Female_Athletes_Pop">Female_Athletes_Pop</option>
-            <option value="Female_Athletes_logPop">Female_Athletes_logPop</option>
-            <option value="Female_Bronze">Female_Bronze</option>
-            <option value="Female_Gold">Female_Gold</option>
-            <option value="Female_Medalists">Female_Medalists</option>
-            <option value="Female_Medalists_Pop">Female_Medalists_Pop</option>
-            <option value="Female_Medalists_TeamSize">Female_Medalists_TeamSize</option>
-            <option value="Female_Medalists_logPop">Female_Medalists_logPop</option>
-            <option value="Female_Medals">Female_Medals</option>
-            <option value="Female_Medals_Medalists">Female_Medals_Medalists</option>
-            <option value="Female_Medals_Pop">Female_Medals_Pop</option>
-            <option value="Female_Medals_TeamSize">Female_Medals_TeamSize</option>
-            <option value="Female_Medals_logPop">Female_Medals_logPop</option>
-            <option value="Female_Silver">Female_Silver</option>
-            <option value="Gold">Gold</option>
-            <option value="Male_Athletes">Male_Athletes</option>
-            <option value="Male_Athletes_Pop">Male_Athletes_Pop</option>
-            <option value="Male_Athletes_logPop">Male_Athletes_logPop</option>
-            <option value="Male_Bronze">Male_Bronze</option>
-            <option value="Male_Gold">Male_Gold</option>
-            <option value="Male_Medalists">Male_Medalists</option>
-            <option value="Male_Medalists_Pop">Male_Medalists_Pop</option>
-            <option value="Male_Medalists_TeamSize">Male_Medalists_TeamSize</option>
-            <option value="Male_Medalists_logPop">Male_Medalists_logPop</option>
-            <option value="Male_Medals">Male_Medals</option>
-            <option value="Male_Medals_Medalists">Male_Medals_Medalists</option>
-            <option value="Male_Medals_Pop">Male_Medals_Pop</option>
-            <option value="Male_Medals_TeamSize">Male_Medals_TeamSize</option>
-            <option value="Male_Medals_logPop">Male_Medals_logPop</option>
-            <option value="Male_Silver">Male_Silver</option>
-            <option value="Medalists">Medalists</option>
-            <option value="Medalists_Pop">Medalists_Pop</option>
-            <option value="Medalists_TeamSize">Medalists_TeamSize</option>
-            <option value="Medalists_logPop">Medalists_logPop</option>
-            <option value="Medals_Medalists">Medals_Medalists</option>
-            <option value="Medals_Pop">Medals_Pop</option>
-            <option value="Medals_TeamSize">Medals_TeamSize</option>
-            <option value="Medals_logPop">Medals_logPop</option>
-            <option value="Silver">Silver</option>
-        </select>        
-        
-        
+        <div id="header">
+			<div id="title">
+				<h2>Olympinomics</h2>
+			</div>
+            <div id="menu">
+                <div class="varSelects">
+                  <span class="selectTitle">Upper Graph</span>                  
+                  <select id="TopVariable"></select>
+                  <span class="selectTitle">Lower Graph</span>
+                  <select id="BottomVariable"></select>
+                  <span class="selectTitle">Gender</span>
+                  <label><input type="checkbox" value="Female" checked>Female</label> 
+                  <label><input type="checkbox" value="Male" checked>Male</label>
+                </div>
+            </div>
+		</div>
         <svg></svg>
         <script>
             var XScreen = window.screen.availWidth
             var YScreen = window.screen.availHeight
             var MarginPct = 0.025
             var xMargin = MarginPct*XScreen
-            var yMargin = MarginPct*YScreen
+            var yMargin = MarginPct*YScreen+60
             
             var FigureWidth = XScreen - 2*xMargin
             var FigureHeight = YScreen - 2*yMargin
             
+            var upVar = "GNI per capita, PPP (current international $)";
+            var downVar = 'Female_Silver';
             
-
-
-        var upVar = "GDP (current US$)";
-        var downVar = 'Medals';
-
             
-       
-            
-        d3.json('./Data/data_joined.json', function(json_data){
-                var data = d3.entries(json_data);
-                              
-        function update(upVar, downVar) {          
-                     data.sort(function(a, b){
-                         return d3.descending(a.value[upVar] || 0, b.value[upVar] || 0)
-                     }) 
-                       
-                console.log(data);
-        
-                var svg = d3.select('svg')
-                    .attr('width', FigureWidth)
-                    .attr('height', FigureHeight)
-                    .selectAll('g')
-                    .data(data, function(d){return d.key;})
-                    //.data(data)
-                
-                var groups = svg.enter()
-                            .append('g')
+            d3.json('./Data/data_joined.json', function(json_data){
+                    var data = d3.entries(json_data);
 
-                
-                
-                var upMin = d3.min(data, function(d){
-                    return d.value[upVar] || 0;  
-                })                
-                
-                var upMax = d3.max(data, function(d){
-                    return d.value[upVar] || 0;  
-                })                
-                
-                var downMin = d3.min(data, function(d){
-                    return d.value[downVar] || 0;  
-                })                
-                
-                var downMax = d3.max(data, function(d){
-                    return d.value[downVar] || 0;  
-                })                
-                
-                var lenRange = FigureHeight/2;
+            function update(upVar, downVar) {          
+                         data.sort(function(a, b){
+                             return d3.descending(a.value[upVar] || 0, b.value[upVar] || 0)
+                         }) 
 
-                var upMap = d3.scale.linear()
-                                .domain([upMin, upMax])
-                                .range([0, lenRange]);
-                                
-                var downMap = d3.scale.linear()
-                                .domain([downMin, downMax])
-                                .range([0, lenRange]);
-                var startY = lenRange*0.99;
-                var startX = 10+xMargin;
-                var barWidth = FigureWidth/data.length
+                    console.log(data);
 
-                var upRect = groups
-                    .append('rect')
-                    .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
-	                .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
-                    .attr("class", "up")
+                    var svg = d3.select('svg')
+                        .attr('width', FigureWidth)
+                        .attr('height', FigureHeight)
+                        .selectAll('g')
+                        .data(data, function(d){return d.key;})
+                        //.data(data)
 
-                var downRect = groups
-                    .append('rect')
-                    .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
-                    .attr("class", "down")
+                    var groups = svg.enter()
+                                .append('g')
+
+                    var upMin = d3.min(data, function(d){
+                        return d.value[upVar] || 0;  
+                    })                
+
+                    var upMax = d3.max(data, function(d){
+                        return d.value[upVar] || 0;  
+                    })                
+
+                    var downMin = d3.min(data, function(d){
+                        return d.value[downVar] || 0;  
+                    })                
+
+                    var downMax = d3.max(data, function(d){
+                        return d.value[downVar] || 0;  
+                    })                
+
+                    var lenRange = FigureHeight/2;
+
+                    var upMap = d3.scale.linear()
+                                    .domain([upMin, upMax])
+                                    .range([0, lenRange]);
+
+                    var downMap = d3.scale.linear()
+                                    .domain([downMin, downMax])
+                                    .range([0, lenRange]);
+                    var startY = lenRange*0.99;
+                    var startX = 10+xMargin;
+                    var barWidth = Math.floor(FigureWidth/data.length);
+
+                    var upRect = groups
+                        .append('rect')
+                        .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
+                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
+                        .attr("class", "up")
+
+                    var downRect = groups
+                        .append('rect')
+                        .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
+                        .attr("class", "down")
                     
-                svg
-                    .exit()
-                    .remove()                      
+                    var upLabel = groups
+                        .append("text")
+                        .attr("class", "upperLabel")
+                    
+                    var downLabel = groups
+                        .append('text')
+                        .attr("class", "lowerLabel")
 
-                svg.select('.up')
-                    .attr("fill", "red")
-                    .attr("x", startX)
-	                .attr("width", barWidth)
-                    .attr("opacity", 0.5)                    
-                    .attr("id", function(d) { return d.key; })
-                    .transition()
-                    .duration(1000)
-                    .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
-	                .attr("height", function(d) { return upMap(d.value[upVar] || 0); })
-	                .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
-            
+                    svg
+                        .exit()
+                        .remove()                      
 
-                svg.select('.down')
-	                .attr("fill", "steelblue")
-                    .attr("x", startX)
-                    .attr("width", barWidth)
-                    .attr("opacity", 0.5)
-                    .attr("id", function(d) { return d.key; })
-                    .transition()
-                    .duration(1000)
-                    .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
-	                .attr("height", function(d) { return downMap(d.value[downVar] || 0); })
-            
-            
-            return [upVar, downVar]
-            
-        }
+                    svg.select('.up')
+                        .attr("fill", "#FE9900")
+                        .attr("x", startX)
+                        .attr("width", barWidth)
+                        .attr("opacity", 0.8)                    
+                        .attr("id", function(d) { return d.key; })
+                        .transition()
+                        .duration(1000)
+                        .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
+                        .attr("height", function(d) { return upMap(d.value[upVar] || 0); })
+                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
+
+
+                    svg.select('.down')
+                        .attr("fill", "#514554")
+                        .attr("x", startX)
+                        .attr("width", barWidth)
+                        .attr("opacity", 0.8)
+                        .attr("id", function(d) { return d.key; })
+                        .transition()
+                        .duration(1000)
+                        .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
+                        .attr("height", function(d) { return downMap(d.value[downVar] || 0); })
+                    
+                    svg.select('.upperLabel')
+                        .text(upVar)
+                        .attr("dy", ".71em")
+                        .attr("y", '40%')
+                        .attr("x", '70%');
+                
+                    svg.select('.lowerLabel')
+                        .text(downVar)
+                        .attr("dy", ".71em")
+                        .attr("y", '60%')
+                        .attr("x", '70%');
+
+
+                return [upVar, downVar]
+
+            }
+                
             var Vars = update(upVar, downVar);
             console.log(Vars);
             
@@ -198,18 +168,7 @@
             d3.select("#BottomVariable").on("change", function(){                                    
                                          Vars = update(Vars[0] , d3.event.target.value)                                        
                                     });
-        
-            
-            
-                              
             });
-            
-                
-
-        
         </script>
     </body>
-
-    
-
 </html>

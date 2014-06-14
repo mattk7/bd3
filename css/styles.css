@@ -1,0 +1,113 @@
+body {
+	margin: 0px;
+    font: normal 12px HelveticaNeue, Helvetica, Arial;
+    -webkit-backface-visibility: hidden;
+}
+#header {
+	width: 100%;
+	height: 48px;
+	background: #232323;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px, rgba(255, 255, 255, 0.25) 1px 0px 0px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px, rgba(255, 255, 255, 0.25) 1px 0px 0px;
+	box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px, rgba(255, 255, 255, 0.25) 1px 0px 0px;
+    padding: 0;
+    margin: 0;
+}
+#title{
+    width: 25%;
+    height: 8px;
+    float: left;
+	text-align: left;
+    padding: 0;
+    margin: 0;
+    position: relative;	
+}
+#title h2 {
+	color: white;
+    font-weight: bold;
+    text-shadow: rgba(0,0,0,0.2) 0px 1px 1px;
+white-space: nowrap;
+	font-size: 20px;
+    padding: 0;
+    margin-left: 20px;
+    margin-top: 12px;
+    text-transform:uppercase;
+}
+#menu {
+    height: 180px;
+    position: absolute;
+    top: 0;
+    left: 60%;
+    float: left;
+	width: 300px;
+	background: #3F3F3F;
+    color: white;
+    border-radius:0;
+    padding:10px 8px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px, rgba(255, 255, 255, 0.25) 1px 0px 0px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px, rgba(255, 255, 255, 0.25) 1px 0px 0px;
+	box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px, rgba(255, 255, 255, 0.25) 1px 0px 0px;
+}
+
+div.varSelects {
+    position: relative;
+}
+
+.selectTitle {
+    display: block;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    box-sizing: border-box;
+    color: #cbcbcb;
+}
+
+select {
+    background-color: #323232;
+    color: white;
+    padding: 7px;    
+    border: none;
+    width: 294px;
+}
+
+input {
+    background-color: #323232;
+    color: white;
+    font-family: 'Helvetica Neue','Open Sans',Arial,sans-serif;
+    border: none;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin:0 5px 0 0;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+    *overflow: hidden;
+}
+
+input:focus, select:focus, option:focus {
+	outline: none;
+}
+
+label{
+    margin-right: 50px;
+    display: block;
+    padding-left: 22px;
+    text-indent: -22px;
+    float: left;
+}
+
+svg {
+    margin-top: 20px;
+}
+
+.upperLabel {
+    font: 300 20px Helvetica Neue;
+    fill: #FE9900;
+}
+
+.lowerLabel {
+    font: 300 20px Helvetica Neue;
+    fill: #514554;
+}
