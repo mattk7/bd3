@@ -23,7 +23,7 @@ $(document).ready(function() {
          });
          
          //not liking this part at all - should re-arrange the json and then just slice the array
-         var topSelectArray = [items[0],items[2],items[3],items[4],items[6],items[7],items[11],items[16]];         
+         var topSelectArray = [items[0],items[2],items[3],items[6],items[7],items[11],items[16]];         
          var bottomSelectArray = $(items).not(topSelectArray).get();
          
          populateSelect('TopVariable', topSelectArray);         
