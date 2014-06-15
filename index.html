@@ -12,7 +12,7 @@
 				<h2>Olympinomics</h2>
 			</div>
             <div id="menu">
-                <div class="varSelects">
+                <div class="varSelects">7
                   <span class="selectTitle">Upper Graph</span>                  
                   <select id="TopVariable"></select>
                   <span class="selectTitle">Lower Graph</span>
@@ -96,7 +96,12 @@
                         g_i.selectAll('text').remove()
                         })
 
-                    
+                    .on('click', function(d,i) { d3.select(this)
+                        var rect_i = d3.select(this).selectAll('rect')
+                        var countryName = d3.select(rect_i[0][0]).attr("id")
+                        console.log(countryName)
+                        showCountryWeb(countryName);
+                        })                    
                     
                     
                     var upMin = d3.min(data, function(d){
