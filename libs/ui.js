@@ -12,7 +12,7 @@ function populateSelect(id, data) {
         });
 }
 
-$(document).ready(function() {     
+$(document).ready(function() {
      $.getJSON('./Data/data_joined.json', function(data) {
          
          var items = [];
