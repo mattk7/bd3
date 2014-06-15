@@ -110,3 +110,18 @@ svg {
     font: 300 18px/140% "MyriadPro-Regular", "Myriad Pro Regular", MyriadPro, "Myriad Pro", Calibri, sans-serif;
     fill: #514554;
 }
+
+#chart {
+    width: 800px;
+    height: 600px;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 40px;
+    left: 25%;
+    display: none;
+    overflow: hidden;
+    font-size: 14px;
+    font-family: "Helvetica Neue", Helvetica;
+    z-index: 100;
+}

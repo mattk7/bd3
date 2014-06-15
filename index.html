@@ -20,9 +20,13 @@
                   <span class="selectTitle">Gender</span>
                   <label><input type="checkbox" value="Female" checked>Female</label> 
                   <label><input type="checkbox" value="Male" checked>Male</label>
+                  <button id="tempButton">Spider</button>
                 </div>
             </div>
 		</div>
+        <div id="chart"></div>
+        <script type="text/javascript" src="./libs/spider.js"></script>
+        
         <svg></svg>
         <script>
             var XScreen = window.screen.availWidth
@@ -158,6 +162,11 @@
                      Vars = update(Vars[1], Vars[0])
                      console.log(Vars);
                 })
+            
+            d3.select('#tempButton')
+                .on('click', function(){
+                     showCountryWeb('Canada');
+                })
 
             
             d3.select("#TopVariable").on("change", function(){                                    
@@ -168,6 +177,6 @@
                                          Vars = update(Vars[0] , d3.event.target.value)                                        
                                     });
             });
-        </script>
+        </script>        
     </body>
 </html>
