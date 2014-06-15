@@ -12,21 +12,23 @@ function populateSelect(id, data) {
         });
 }
 
-$(document).ready(function() {
-     $.getJSON('./Data/data_joined.json', function(data) {
-         
+$(document).ready(function() {     
+     $.getJSON('./Data/DropVariables.json', function(data) {
+         /*
          var items = [];
          
          //getting all the keys, i.e. column titles
-         $.each(data['Afghanistan'], function( key, val ) {
+         $.each(data['upperVariables'], function( key, val ) {
             items.push(key);
          });
-         
+         */
          //not liking this part at all - should re-arrange the json and then just slice the array
-         var topSelectArray = [items[0],items[2],items[3],items[6],items[7],items[11],items[16]];         
-         var bottomSelectArray = $(items).not(topSelectArray).get();
+         var topSelectArray = data['upperVariables'];         
+         var bottomSelectArray = data['lowerVariables'];
+         var filtersSelectArray = data['Filters'];
          
          populateSelect('TopVariable', topSelectArray);         
          populateSelect('BottomVariable', bottomSelectArray);
+         populateSelect('Filter', filtersSelectArray);
       });
   });

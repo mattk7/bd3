@@ -17,9 +17,8 @@
                   <select id="TopVariable"></select>
                   <span class="selectTitle">Lower Graph</span>
                   <select id="BottomVariable"></select>
-                  <span class="selectTitle">Gender</span>
-                  <label><input type="checkbox" value="Female" checked>Female</label> 
-                  <label><input type="checkbox" value="Male" checked>Male</label>
+                  <span class="selectTitle">Filter by</span>
+                  <select id="Filter"><option value = ""></option></select>
                 </div>
             </div>
 		</div>
@@ -35,17 +34,21 @@
             var FigureWidth = XScreen - 2*xMargin
             var FigureHeight = YScreen - 2*yMargin
             
-            var upVar = "GNI per capita, PPP (current international $)";
-            var downVar = 'Female_Silver';
+            var upVar = "Medals";
+            var downVar = 'Population';
+            var filterVar = '';
             
             
-            d3.json('./Data/data_joined.json', function(json_data){
+            d3.json('./Data/data_joined_w_filter.json', function(json_data){
                 var data = d3.entries(json_data);
 
-                function update(upVar, downVar) {
+                function update(upVar, downVar, filterVar) {
                     data.sort(function(a, b){
-                        return d3.descending(a.value[upVar] || 0, b.value[upVar] || 0)
-                    }) 
+                        return d3.descending(a.value[downVar] || 0, b.value[downVar] || 0)
+                    })
+                    console.log(filterVar)
+                    if (filterVar == '|' || filterVar == '' || filterVar == undefined) { var upVarFilter = upVar;} else {var upVarFilter = upVar+filterVar;} 
+                    console.log(upVarFilter)
 
                     console.log(data);
 
@@ -102,11 +105,11 @@
                     
                     
                     var upMin = d3.min(data, function(d){
-                        return d.value[upVar] || 0;  
+                        return d.value[upVarFilter] || 0;  
                     })                
 
                     var upMax = d3.max(data, function(d){
-                        return d.value[upVar] || 0;  
+                        return d.value[upVarFilter] || 0;  
                     })                
 
                     var downMin = d3.min(data, function(d){
@@ -133,7 +136,7 @@
                     var upRect = groups
                         .append('rect')
                         .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
-                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
+                        .attr("y", function(d) { return -upMap(d.value[upVarFilter] || 0); })
                         .attr("class", "up")
                         .attr("cursor", "pointer")
 
@@ -164,8 +167,8 @@
                         .transition()
                         .duration(1000)
                         .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
-                        .attr("height", function(d) { return upMap(d.value[upVar] || 0); })
-                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
+                        .attr("height", function(d) { return upMap(d.value[upVarFilter] || 0); })
+                        .attr("y", function(d) { return -upMap(d.value[upVarFilter] || 0); })
 
 
                     svg.select('.down')
@@ -191,11 +194,11 @@
                         .attr("y", '60%')
                         .attr("x", '70%');
 
-                    return [upVar, downVar];
+                    return [upVar, downVar, filterVar];
 
             }
                 
-            var Vars = update(upVar, downVar);
+            var Vars = update(upVar, downVar, filterVar);
             console.log(Vars);
             
                     
@@ -204,13 +207,16 @@
                     $("#chart").hide("slow");
                     $("body svg").fadeTo("fast", 1);
                 })
-            
+
             d3.select("#TopVariable").on("change", function(){                                    
-                                         Vars = update(d3.event.target.value, Vars[1])                                        
+                                         Vars = update(d3.event.target.value, Vars[1], Vars[2])                                        
                                     });
             
             d3.select("#BottomVariable").on("change", function(){                                    
-                                         Vars = update(Vars[0] , d3.event.target.value)                                        
+                                         Vars = update(Vars[0] , d3.event.target.value, Vars[2])                                        
+                                    });
+            d3.select("#Filter").on("change", function(){                                    
+                                         Vars = update(Vars[0] , Vars[1], '|'+d3.event.target.value)                                        
                                     });
             });
         </script>        

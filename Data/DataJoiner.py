@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import csv
-
+import json
 # Read in csv's and join.
 
 CountriesData = {}
@@ -22,6 +22,32 @@ for row in OLY_rows:
 		if AthleteSport not in Filters['Sport']:
 			Filters['Sport'].append(AthleteSport)
 	counter += 1
+
+lowerVariables = ["Population", "GDP (current US$)", "GDP per capita (current US$)", "GINI index", "GNI per capita,  PPP (current international $)", "GNI per capita Atlas method (current US$)"]
+upperVariables = []
+for PureMeasure in PureMeasures:
+	upperVariables.append(PureMeasure)
+	for NormalizingFactor in NormalizingFactors:
+		upperVariables.append(PureMeasure+' per '+NormalizingFactor)
+MenuFilters = []
+for Filter in Filters['Sex']:
+	MenuFilters.append(Filter)
+for Filter in Filters['Sport']:
+	MenuFilters.append(Filter)
+
+StructOut = '{"upperVariables": ['
+for upperVariable in upperVariables:
+	StructOut += '"'+upperVariable+'", '
+StructOut = StructOut[0:-2]+'], "lowerVariables": ['
+for lowerVariable in lowerVariables:
+	StructOut += '"'+lowerVariable+'", '
+StructOut = StructOut[0:-2]+'], "Filters": ['
+for Filter in MenuFilters:
+	StructOut += '"'+Filter+'", '
+StructOut = StructOut[0:-2]+']}'
+DropDownStructOut = open('DropVariables.json','w')
+DropDownStructOut.write(StructOut)
+DropDownStructOut.close()
 
 WB_rows = csv.reader(open('WBData_Clean.csv', 'r'), delimiter=',', quotechar='"')
 counter = 0
@@ -124,10 +150,13 @@ for Country in CountriesData:
 	jsonOut += '"'+Country+'":{'
 	for Measure in CountriesData[Country]:
 		jsonOut += '"'+Measure+'":'+str(CountriesData[Country][Measure])+', '
-	jsonOut = jsonOut[0:-2] + '},\n'
+	#print Country, jsonOut[0:-2] + '}}'
+	#blah = jsonOut[0:-2] + '}}'
+	#bacon = json.loads(blah)
+	jsonOut = jsonOut[0:-2] + '}, '
 
 jsonOut = jsonOut[0:-2] + '}'
-
+#blah = json.loads(jsonOut)
 fout = open('data_joined_w_filter.json', 'w')
 fout.write(jsonOut)
 fout.close()
