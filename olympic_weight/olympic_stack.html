@@ -132,11 +132,17 @@ path.area {
 }
             
 .gold{
-    stroke: #F0DC00;
-    stroke-width: 1.5px;
+    stroke: #FFCC00;
+    stroke-width: 2px;
     fill: #FFEA00;
 }
         </style>
+
+        
+        
+        
+        
+        
         
 
     </head>
@@ -144,6 +150,15 @@ path.area {
         <svg>
         </svg>
         <div id=buttons></div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         <script>
 // This looks like a good example: http://bl.ocks.org/mbostock/3020685
@@ -177,9 +192,11 @@ var area = d3.svg.area()
     .y1(function(d){return y(d.y0+d.y) })
     .interpolate('cardinal');
 
+            
+            
 // The plotter
 function plotter(stackedData) {
-//    console.log(stackedData)
+    console.log(stackedData)
     index_last_stack=stackedData.length-1
     y_dom = [0, 1.1* d3.max(stackedData[index_last_stack].values, function(d) { return d.y0+d.y; })]
      
@@ -253,42 +270,80 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
         .entries(data)
 
     /* Create the lookup table */
-    tableGold = [];
-    sportWeight.forEach(function(d){
-        tableGold[d.key] = [];
-    })
+    var tableGold = [];
+//    sportWeight.forEach(function(d){
+//        tableGold[d.key] = [];
+//    })
     
+//    golds.forEach(function(d) {
+//        if (d.key != 0){
+//            d.values.forEach(function(d){
+//                tableGold[d.Sport].push({'Weight': d.Weight});
+//            })
+//        }
+//    });
     golds.forEach(function(d) {
         if (d.key != 0){
             d.values.forEach(function(d){
-                tableGold[d.Sport].push({'Weight': d.Weight});
+                tableGold.push({'key': d.Sport, 'values': [{'Weight': d.Weight}]});
             })
         }
     });
 
-    var circle = svg.selectAll("circle")
-    .data(tableGold['Athletics']);
+    tableGold = d3.nest()
+        .key(function(d){
+            return d.Sport;
+        })
+        .entries(data);
+    
+    
+    console.log(tableGold);
+    var medalContainer = svg.append('g')
+        .attr('class', 'medalContainer')
+        .selectAll('g.medalContainer')
+        .data(tableGold, function(d){ return d.key; });
 
-    circle.exit().remove();
+    medalContainer.exit().remove();
 
-    circle.enter().append("circle")
-        .attr("r", 5)
-        .attr('class', 'gold');
+    medalContainer
+    .enter()
+    .append("g")
+        .attr('class', 'sportMedals')
 
-    circle
-        .attr("cx", function(d) { return x(d.Weight); })
-        .attr("cy", function(d) {
-            xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
-            p1 = stackValues[1].values[xValues.indexOf(xClosest)-1]
-            p2 = stackValues[1].values[xValues.indexOf(xClosest)]
-            function jitterY(p1){
-                return p1.y0+p1.y*(1/4 + 1/2* Math.random())
-            }
-            
-            yGold = jitterY(p1) + (jitterY(p2) -jitterY(p1)) * (d.Weight-p1.x)/(p2.x-p1.x)
-            
-            return y(yGold);
+    function interpY(d) {
+        xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
+        p1 = stackedData[0].values[xValues.indexOf(xClosest)-1]
+        p2 = stackedData[0].values[xValues.indexOf(xClosest)]
+        function jitterY(p1){
+        return p1.y0+p1.y*(.4 + .2* Math.random())
+    }
+
+    yGold = jitterY(p1) + (jitterY(p2) - jitterY(p1)) * (d.Weight-p1.x)/(p2.x-p1.x)
+
+    return y(yGold);
+    }
+    
+    medalContainer
+        .transition()
+        .duration(600)
+        .each(function(d) {
+//            console.log(d)
+            var medalGroup = d3.select(this)
+
+            d.values.forEach(function(dd){
+//                console.log(dd)
+                if(dd.Gold != 0) {          
+                    medalGroup.append('circle')
+                    .attr('class', 'gold')
+                    .attr("cx", x(dd.Weight))
+                    .attr("cy", interpY(dd))
+                    .attr('r', 5)
+                }
+
+
+            })    
         });
+
 
            //--------  HOVER
 
@@ -306,8 +361,9 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
     svg.selectAll("path.generator")
         .attr("opacity", 1)
         .on("mouseover", function(d, i) {
-          svg.selectAll("path.generator").transition()
-          .duration(250)
+          svg.selectAll("path.generator")
+          .transition()
+          .duration(300)
           .attr("opacity", function(d, j) {
             return j != i ? 0.6 : 1;
     })})
@@ -336,7 +392,7 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
     .on("mouseout", function(d, i) {
         svg.selectAll(".generator")
         .transition()
-        .duration(400)
+        .duration(300)
         .attr("opacity", "1");
         d3.select(this)
         .classed("hover", false)
@@ -425,7 +481,7 @@ d3.csv("data/hist.csv", function(data) {
 
   // Compute the minimum and maximum weight, and the maximum counts.
   // d0 = stack_gens[0].map(function(d){return d.x}); //the whole domain
-  x_dom = [minWeight, maxWeight]
+  x_dom = [30, 150]//[minWeight, maxWeight]
   x_dom_zoom = [40, 120]; //just a small part of domain
   
     plotter(stackValues)
@@ -436,18 +492,18 @@ d3.csv("data/hist.csv", function(data) {
            
             
 // On click, update the x-axis.
-svg.on("click", function() {
-  var new_dom = x.domain()[0] - x_dom[0] ? x_dom : x_dom_zoom;
-  x.domain(new_dom);
-  var t = svg.transition().duration(d3.event.altKey ? 7500 : 750);
-  t.select("g.x.grid").call(xAxis.tickSubdivide(1).tickSize(-h));
-  t.select("g.y.grid").call(yAxis.tickSubdivide(1).tickSize(-w));
-  t.select("g.x.axis").call(xAxis.tickSubdivide(0).tickSize(6));
-  t.select("g.y.axis").call(yAxis.tickSubdivide(0).tickSize(6));
-  t.selectAll("path.generator").attr("d", function(d){
-      return area(d.values)
-  });
-});
+//svg.on("click", function() {
+//  var new_dom = x.domain()[0] - x_dom[0] ? x_dom : x_dom_zoom;
+//  x.domain(new_dom);
+//  var t = svg.transition().duration(d3.event.altKey ? 7500 : 750);
+//  t.select("g.x.grid").call(xAxis.tickSubdivide(1).tickSize(-h));
+//  t.select("g.y.grid").call(yAxis.tickSubdivide(1).tickSize(-w));
+//  t.select("g.x.axis").call(xAxis.tickSubdivide(0).tickSize(6));
+//  t.select("g.y.axis").call(yAxis.tickSubdivide(0).tickSize(6));
+//  t.selectAll("path.generator").attr("d", function(d){
+//      return area(d.values)
+//  });
+//});
         
             
 ///////________________________________________
