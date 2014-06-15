@@ -18,7 +18,9 @@ function nesting (data){
             return d.Age;
         })
         .sortKeys(d3.ascending)
-        .key(function(d) { return d.Sex; })
+        .key(function(d) { 
+            return d.Sex; 
+        })
         .entries(data);
     return newdata;
 }
@@ -188,11 +190,90 @@ function start() {
                     return COLOR_MALE;
                 }
             })
-            .append("title")
-            .text(function(d) {
-                console.log(d);
-                return "The number of athletes in this horizontal cluster is: " + d.values.length ;
-            });
+        .on('mouseover', function(d, i) {
+            //gold olymic medals *********************
+            //Get this squares x/y values, then augment for the tooltip
+            /*var coordinates = [0, 0];
+                coordinates = d3.mouse(this);
+                console.log(coordinates);
+
+                var xPositionTT = coordinates[0];
+                var yPositionTT = coordinates[1];
+
+                medals(people).Gold
+                */
+            function getInfoMedals(d,i){
+                goldArray = []
+
+                for (i=0; i<d.values.length; i++){
+                    console.log(d);
+                    if (d.values[i].Gold){
+                        var goldCount = parseFloat(d.values[i].Gold); 
+                        goldArray.push(goldCount);
+                    }
+                }
+                
+                return goldArray.length;
+            }
+
+            function getInfoName(d,i){
+                namesArray = [];
+
+                for (i=0; i<d.values.length; i++){
+                    
+                    if (d.values[i].Gold){
+                        var nameTTinfo = d.values[i].Name;
+                        namesArray.push(nameTTinfo);
+                    }
+                }
+
+                return namesArray;
+            }
+
+            function getInfoCountry(d,i){
+                countriesArray = [];
+                for (i=0; i<d.values.length; i++){
+                    if (d.values[i].Gold){
+                        var countryTTinfo = d.values[i].Country;
+                        countriesArray.push(countryTTinfo);
+                    }
+                } 
+                return countriesArray; 
+            }
+
+ /*           function getInfoEvent(d,i){
+                sportArray = [];
+                for (i=0; i<d.values.length; i++){
+                    
+                    if (d.values[i].Gold){
+                        var eventTTinfo = d.values[i].Event;
+                        sportArray.push(eventTTinfo);
+                    }
+                }
+                return sportArray; 
+            }
+*/            
+
+            //Update the tooltip values
+            d3.select("#tooltip")
+            .style("left", 960 + "px")
+            .style("top", 45 + "px")
+            .select("#nameTT")
+            .text(getInfoName(d))
+
+            d3.select("#tooltip")
+            .select("#countryTT")
+            .text(getInfoCountry(d))
+
+ /*           d3.select("#tooltip")
+            .select("#sportTT")
+            .text(getInfoEvent(d))
+*/
+            d3.select("#tooltip")
+            .select("#medalsTT")
+            .text(getInfoMedals(d))
+
+        });
 
         
         //adding the gold medal boxes + mouseover info 
@@ -219,84 +300,7 @@ function start() {
             .style('fill', function (d, i) {
                 return "black";
             })
-            .on('mouseover', function(d, i) {
-                //gold olymic medals *********************
-                console.log("ON MOUSE OVER TEST - GOLD MEDAL");
-                for (i=0; i<d.values.length; i++){
-                    console.log(d.values[i].Event); 
-                    console.log(d.values[i].Country);
-                    console.log(d.values[i].Name);
-                    console.log("------");
-                }
-                
-                //Get this squares x/y values, then augment for the tooltip
-                /*var coordinates = [0, 0];
-                coordinates = d3.mouse(this);
-                console.log(coordinates);
-                
-                var xPositionTT = coordinates[0];
-                var yPositionTT = coordinates[1];
-                */
-                function getInfoMedals(d,i){
-                    
-                    return d.values.length
-                }
-                
-                
-                function getInfoName(d,i){
-                    namesArray = [];
-                    
-                    for (i=0; i<d.values.length; i++){
-                        var nameTTinfo = d.values[i].Name;
-                        namesArray.push(nameTTinfo);
-                    }
-                    
-                    return namesArray;
-                }
-                    
-                function getInfoCountry(d,i){
-                    countriesArray = [];
-                        for (i=0; i<d.values.length; i++){
-                            console.log(d.values[i].Country);
-                            var countryTTinfo = d.values[i].Country;
-                            console.log("------");
-                            countriesArray.push(countryTTinfo); 
-                        } 
-                    return countriesArray; 
-                }
-                
-                function getInfoEvent(d,i){
-                    sportArray = [];
-                    for (i=0; i<d.values.length; i++){
-                        console.log(d.values[i].Event);
-                        var eventTTinfo = d.values[i].Event;
-                        console.log("------");
-
-                        sportArray.push(eventTTinfo);
-                    }
-                    return sportArray; 
-                }
-                
-                //Update the tooltip values
-                d3.select("#tooltip")
-                    .style("left", 960 + "px")
-                    .style("top", 45 + "px")
-                    .select("#nameTT")
-                    .text(getInfoName(d))
-                
-                d3.select("#tooltip")
-                    .select("#countryTT")
-                    .text(getInfoCountry(d))
-                
-                d3.select("#tooltip")
-                    .select("#sportTT")
-                    .text(getInfoEvent(d))
-                
-                d3.select("#tooltip")
-                    .select("#medalsTT")
-                    .text(getInfoMedals(d))
-
-            });
+            
 
         //legend
         LEGEND_WIDTH = 200
