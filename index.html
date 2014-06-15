@@ -39,12 +39,12 @@
             
             
             d3.json('./Data/data_joined.json', function(json_data){
-                    var data = d3.entries(json_data);
+                var data = d3.entries(json_data);
 
-            function update(upVar, downVar) {          
-                         data.sort(function(a, b){
-                             return d3.descending(a.value[upVar] || 0, b.value[upVar] || 0)
-                         }) 
+                function update(upVar, downVar) {
+                    data.sort(function(a, b){
+                        return d3.descending(a.value[upVar] || 0, b.value[upVar] || 0)
+                    }) 
 
                     console.log(data);
 
@@ -97,12 +97,12 @@
                         .append('rect')
                         .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
                         .attr("class", "down")
-                    
-                    var upLabel = groups
+
+                    var upLabel = d3.select('svg')
                         .append("text")
                         .attr("class", "upperLabel")
-                    
-                    var downLabel = groups
+
+                    var downLabel = d3.select('svg')
                         .append('text')
                         .attr("class", "lowerLabel")
 
@@ -133,21 +133,20 @@
                         .duration(1000)
                         .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
                         .attr("height", function(d) { return downMap(d.value[downVar] || 0); })
-                    
-                    svg.select('.upperLabel')
+
+                     d3.select('svg').select('.upperLabel')
                         .text(upVar)
                         .attr("dy", ".71em")
                         .attr("y", '40%')
                         .attr("x", '70%');
-                
-                    svg.select('.lowerLabel')
+
+                     d3.select('svg').select('.lowerLabel')
                         .text(downVar)
                         .attr("dy", ".71em")
                         .attr("y", '60%')
                         .attr("x", '70%');
 
-
-                return [upVar, downVar]
+                    return [upVar, downVar];
 
             }
                 
