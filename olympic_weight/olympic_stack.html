@@ -6,136 +6,148 @@
         
         <style>
             body {
-  overflow: hidden;
-  margin: 0;
-  font-size: 14px;
-  font-family: "Helvetica Neue", Helvetica;
-}
+              overflow: hidden;
+              margin: 0;
+              font-size: 14px;
+              font-family: "Helvetica Neue", Helvetica;
+            }
 
-#chart, #header, #footer {
-  position: absolute;
-  top: 0;
-}
+            #chart, #header, #footer {
+              position: absolute;
+              top: 0;
+            }
 
-#header, #footer {
-  z-index: 1;
-  display: block;
-  font-size: 36px;
-  font-weight: 300;
-  text-shadow: 0 1px 0 #fff;
-}
+            #header, #footer {
+              z-index: 1;
+              display: block;
+              font-size: 36px;
+              font-weight: 300;
+              text-shadow: 0 1px 0 #fff;
+            }
 
-#header.inverted, #footer.inverted {
-  color: #fff;
-  text-shadow: 0 1px 4px #000;
-}
+            #header.inverted, #footer.inverted {
+              color: #fff;
+              text-shadow: 0 1px 4px #000;
+            }
 
-#header {
-  top: 80px;
-  left: 140px;
-  width: 1000px;
-}
+            #header {
+              top: 80px;
+              left: 140px;
+              width: 1000px;
+            }
 
-#footer {
-  top: 680px;
-  right: 140px;
-  text-align: right;
-}
+            #footer {
+              top: 680px;
+              right: 140px;
+              text-align: right;
+            }
 
 
-pre {
-  font-size: 18px;
-}
+            pre {
+              font-size: 18px;
+            }
 
-line {
-  stroke: #000;
-  stroke-width: 1.5px;
-}
+            line {
+              stroke: #000;
+              stroke-width: 1.5px;
+            }
 
-.string, .regexp {
-  color: #f39;
-}
+            .string, .regexp {
+              color: #f39;
+            }
 
-.keyword {
-  color: #00c;
-}
+            .keyword {
+              color: #00c;
+            }
 
-.comment {
-  color: #777;
-  font-style: oblique;
-}
+            .comment {
+              color: #777;
+              font-style: oblique;
+            }
 
-.number {
-  color: #369;
-}
+            .number {
+              color: #369;
+            }
 
-.class, .special {
-  color: #1181B8;
-}
+            .class, .special {
+              color: #1181B8;
+            }
 
-a:link, a:visited {
-  color: #000;
-  text-decoration: none;
-}
+            a:link, a:visited {
+              color: #000;
+              text-decoration: none;
+            }
 
-a:hover {
-  color: #666;
-}
+            a:hover {
+              color: #666;
+            }
 
-.hint {
-  position: absolute;
-  right: 0;
-  width: 1000px;
-  font-size: 12px;
-  color: #999;
-}
+            .hint {
+              position: absolute;
+              right: 0;
+              width: 1000px;
+              font-size: 12px;
+              color: #999;
+            }
+
+
+
+            svg {
+              font-size: 10px;
+            }
+
+            rect.bg {
+              fill: #eeeeee;
+            }
+
+            path.area {
+              fill: #000;
+              fill-opacity: .75;
+            }
+
+            .axis line, .grid line {
+              stroke-width: 1px;
+              stroke-opacity: .5;
+              shape-rendering: crispEdges;
+            }
+
+            .grid line {
+              stroke: #fff;
+            }
+
+            .grid text {
+              display: none;
+            }
+
+            .axis line {
+              stroke: #000;
+            }
+
+            .grid path, .axis path {
+              display: none;
+            }
+
+            .stack{
+                border: 1px solid #eee;
+            }
+
+            .gold{
+                stroke: #F0DC00;
+                stroke-width: 1.5px;
+                fill: #FFEA00;
+                }
+
+            .silver{
+                stroke: silver;
+                stroke-width: 1.5px;
+                fill: silver;
+            }
             
-            
-            
-svg {
-  font-size: 10px;
-}
-
-rect.bg {
-  fill: #eeeeee;
-}
-
-path.area {
-  fill: #000;
-  fill-opacity: .75;
-}
-
-.axis line, .grid line {
-  stroke-width: 1px;
-  stroke-opacity: .5;
-  shape-rendering: crispEdges;
-}
-
-.grid line {
-  stroke: #fff;
-}
-
-.grid text {
-  display: none;
-}
-
-.axis line {
-  stroke: #000;
-}
-
-.grid path, .axis path {
-  display: none;
-}
-
-.stack{
-    border: 1px solid #eee;
-}
-            
-.gold{
-    stroke: #F0DC00;
-    stroke-width: 1.5px;
-    fill: #FFEA00;
-}
+            .bronze{
+                stroke: peru;
+                stroke-width: 1.5px;
+                fill: peru;
+            }
         </style>
         
 
@@ -179,7 +191,7 @@ var area = d3.svg.area()
 
 // The plotter
 function plotter(stackedData) {
-//    console.log(stackedData)
+    //console.log(stackedData)
     index_last_stack=stackedData.length-1
     y_dom = [0, 1.1* d3.max(stackedData[index_last_stack].values, function(d) { return d.y0+d.y; })]
      
@@ -246,16 +258,36 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
         xValues.push(sportWeight[0].values[s].x)
     }
 
-    
     // Golds
     var golds = d3.nest()
         .key(function(d){return d.Gold;})
         .entries(data)
+    
+    //Silver
+    var silvers = d3.nest()
+        .key(function(d){return d.Silver;})
+        .entries(data)
+    
+    //Bronze
+    var bronzes = d3.nest()
+        .key(function(d){return d.Bronze;})
+        .entries(data)
+    
 
     /* Create the lookup table */
     tableGold = [];
     sportWeight.forEach(function(d){
         tableGold[d.key] = [];
+    })
+    
+    tableSilver = [];
+    sportWeight.forEach(function(d){
+        tableSilver[d.key] = [];
+    })
+    
+    tableBronze = [];
+    sportWeight.forEach(function(d){
+        tableBronze[d.key] = [];
     })
     
     golds.forEach(function(d) {
@@ -265,9 +297,28 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
             })
         }
     });
-
+    
+    
+    silvers.forEach(function(d) {
+        if (d.key != 0){
+            d.values.forEach(function(d){
+                tableSilver[d.Sport].push({'Weight': d.Weight});
+            })
+        }
+    });
+    
+    bronzes.forEach(function(d) {
+        if (d.key != 0){
+            d.values.forEach(function(d){
+                tableSilver[d.Sport].push({'Weight': d.Weight});
+            })
+        }
+    });
+    
     var circle = svg.selectAll("circle")
     .data(tableGold['Athletics']);
+    
+    console.log(circle)
 
     circle.exit().remove();
 
@@ -290,6 +341,76 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
             return y(yGold);
         });
 
+
+    
+    var circle2= svg.selectAll("circle2")
+    .data(tableSilver['Athletics']);
+    
+    console.log(circle2)
+    
+    circle2.exit().remove();
+
+    circle2.enter().append("circle")
+        .attr("r", 3)
+        .attr('class', 'silver')
+        .attr('cx', function(d) { return x(d.Weight); })
+        .attr('cy',function(d) {
+            xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
+            p1 = stackValues[1].values[xValues.indexOf(xClosest)-1]
+            p2 = stackValues[1].values[xValues.indexOf(xClosest)]
+            function jitterY(p1){
+                return p1.y0+p1.y*(1/4 + 1/2* Math.random())
+            }
+            
+            ySilver = jitterY(p1) + (jitterY(p2) -jitterY(p1)) * (d.Weight-p1.x)/(p2.x-p1.x)
+            
+            return y(ySilver);
+        });
+    
+    
+    var circle3= svg.selectAll("circle3")
+    .data(tableSilver['Athletics']);
+    
+    console.log(circle3)
+    
+    circle3.exit().remove();
+
+    circle3.enter().append("circle")
+        .attr("r", 2)
+        .attr('class', 'bronze')
+        .attr('cx', function(d) { return x(d.Weight); })
+        .attr('cy',function(d) {
+            xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
+            p1 = stackValues[1].values[xValues.indexOf(xClosest)-1]
+            p2 = stackValues[1].values[xValues.indexOf(xClosest)]
+            function jitterY(p1){
+                return p1.y0+p1.y*(1/4 + 1/2* Math.random())
+            }
+            
+            yBronze = jitterY(p1) + (jitterY(p2) -jitterY(p1)) * (d.Weight-p1.x)/(p2.x-p1.x)
+            
+            return y(yBronze);
+        });
+    
+
+//    circle2
+//        .attr('cx',50)
+//        .attr('cy',500)
+    //    .attr("cx", function(d) { return x(d.Weight); })
+    //    .attr("cy", function(d) {20;
+            //xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
+            //p1 = stackValues[1].values[xValues.indexOf(xClosest)-1]
+            //p2 = stackValues[1].values[xValues.indexOf(xClosest)]
+            //function jitterY(p1){
+            //    return p1.y0+p1.y*(1/4 + 1/2* Math.random())
+            //}
+            
+            //ySilver = jitterY(p1) + (jitterY(p2) -jitterY(p1)) * (d.Weight-p1.x)/(p2.x-p1.x)
+            
+            //return y(ySilver);
+    //    });
+
+    
            //--------  HOVER
 
     var infobox = d3.select("body")
