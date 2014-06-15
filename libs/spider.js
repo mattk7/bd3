@@ -210,6 +210,8 @@ var RadarChart = {
 };
 
 function showCountryWeb(country){
+    $("#chartAlert").html("");
+    $("#chart svg").remove();
     var items = [];
     
     $.getJSON('./Data/data_joined_w_filter.json', function(data) {
@@ -222,7 +224,11 @@ function showCountryWeb(country){
              }
              });
         $("body svg").fadeTo("fast", 0.5, function() {
-            displayWeb(items, country);
+            if(items.length == 0)
+                $("#chartAlert").html(country + " has no medals");            
+             else
+                displayWeb(items, country);
+            
             $("#chartTitle").html("% of medals won by " + country);
             $("#chart").show("slow");
           });

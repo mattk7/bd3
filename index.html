@@ -1,5 +1,4 @@
 <html>
-
     <head>
         <script src="./libs/jquery-1.11.1.min.js"></script>
         <script src="./libs/d3.min.js"></script>
@@ -22,8 +21,12 @@
                 </div>
             </div>
 		</div>
-        <div id="chart"><div id="chartTitle"></div><div id="chartClose"></div></div>        
-        <svg></svg>
+        <div id="chart">
+            <div id="chartTitle"></div>
+            <div id="chartClose"></div>
+            <div id="chartAlert"></div>
+        </div>        
+        <svg id="graphSVG"></svg>
         <script>
             var XScreen = window.screen.availWidth
             var YScreen = window.screen.availHeight
@@ -47,12 +50,17 @@
                         return d3.descending(a.value[downVar] || 0, b.value[downVar] || 0)
                     })
                     console.log(filterVar)
-                    if (filterVar == '|' || filterVar == '' || filterVar == undefined) { var upVarFilter = upVar;} else {var upVarFilter = upVar+filterVar;} 
-                    console.log(upVarFilter)
+                    if (filterVar == '|' || filterVar == '' || filterVar == undefined) { 
+                        var upVarFilter = upVar;
+                    } else {
+                        var upVarFilter = upVar+filterVar;
+                    }
+                    
+                    console.log(upVarFilter);
 
                     console.log(data);
 
-                    var svg = d3.select('svg')
+                    var svg = d3.select('svg#graphSVG')
                         .attr('width', FigureWidth)
                         .attr('height', FigureHeight)
                         .selectAll('g')

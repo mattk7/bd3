@@ -154,3 +154,12 @@ svg {
     padding: 5px;
     cursor: pointer;
 }
+
+#chartAlert {
+    width: 600px;
+    margin: auto;
+    font: 300 18px/140% "MyriadPro-Regular", "Myriad Pro Regular", MyriadPro, "Myriad Pro", Calibri, sans-serif;
+    background-color: #FF0000;
+    text-align: center;
+}
+    
