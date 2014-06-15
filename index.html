@@ -12,7 +12,7 @@
 				<h2>Olympinomics</h2>
 			</div>
             <div id="menu">
-                <div class="varSelects">7
+                <div class="varSelects">
                   <span class="selectTitle">Upper Graph</span>                  
                   <select id="TopVariable"></select>
                   <span class="selectTitle">Lower Graph</span>
@@ -20,13 +20,10 @@
                   <span class="selectTitle">Gender</span>
                   <label><input type="checkbox" value="Female" checked>Female</label> 
                   <label><input type="checkbox" value="Male" checked>Male</label>
-                  <button id="tempButton">Spider</button>
                 </div>
             </div>
 		</div>
-        <div id="chart"></div>
-        <script type="text/javascript" src="./libs/spider.js"></script>
-        
+        <div id="chart"><div id="chartTitle"></div><div id="chartClose"></div></div>        
         <svg></svg>
         <script>
             var XScreen = window.screen.availWidth
@@ -138,11 +135,13 @@
                         .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
                         .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
                         .attr("class", "up")
+                        .attr("cursor", "pointer")
 
                     var downRect = groups
                         .append('rect')
                         .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
                         .attr("class", "down")
+                        .attr("cursor", "pointer")
 
                     var upLabel = d3.select('svg')
                         .append("text")
@@ -199,17 +198,12 @@
             var Vars = update(upVar, downVar);
             console.log(Vars);
             
-            d3.select('#btn')
+                    
+            d3.select('#chartClose')
                 .on('click', function(){
-                     Vars = update(Vars[1], Vars[0])
-                     console.log(Vars);
+                    $("#chart").hide("slow");
+                    $("body svg").fadeTo("fast", 1);
                 })
-            
-            d3.select('#tempButton')
-                .on('click', function(){
-                     showCountryWeb('Canada');
-                })
-
             
             d3.select("#TopVariable").on("change", function(){                                    
                                          Vars = update(d3.event.target.value, Vars[1])                                        
@@ -220,5 +214,6 @@
                                     });
             });
         </script>        
+        <script type="text/javascript" src="./libs/spider.js"></script>
     </body>
 </html>
