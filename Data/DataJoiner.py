@@ -5,6 +5,28 @@ import json
 
 CountriesData = {}
 
+SportGroupings = {"Athletics":["Athletics","Athletics, Triathlon", "Triathlon"], "Cycling":["Cycling","Cycling", "Cycling - BMX", "Cycling - BMX, Cycling - Track", "Cycling - Mountain Bike", "Cycling - Mountain Bike, Cycling - Road", "Cycling - Mountain Bike, Cycling - Road, Cycling - Track", "Cycling - Mountain Bike, Cycling - Track", "Cycling - Road", "Cycling - Road, Cycling - Track", "Cycling - Track"], "Combat Sports":["Boxing", "Judo", "Taekwondo", "Wrestling", "Fencing", "Shooting", "Archery", "Weightlifting"], "Team Sports": ["Basketball", "Volleyball", "Water Polo", "Football", "Handball", "Hockey", "Beach Volleyball"], "Boats": ["Rowing", "Sailing", "Canoe Slalom", "Canoe Sprint"], "Aquatics": ["Diving", "Swimming", "Synchronised Swimming"], "Gymnastics": ["Gymnastics - Artistic", "Gymnastics - Rhythmic", "Trampoline"], "Racket Sports": ["Badminton", "Table Tennis", "Tennis"]}
+
+#print SportGroupings
+#for group in SportGroupings:
+#	print group
+
+CountryGroupMedals = {}
+CountryGroupAthletes = {}
+
+Sport2Group = {}
+for Group in SportGroupings:
+	for Sport in SportGroupings[Group]:
+		Sport2Group[Sport] = Group
+
+GroupTotalMedals = {}
+for Group in SportGroupings:
+	GroupTotalMedals[Group] = 0.0
+
+GroupTotalAthletes = {}
+for Group in SportGroupings:
+	GroupTotalAthletes[Group] = 0.0
+
 WBFocusMeasures = ["GNI per capita,  PPP (current international $)", "GDP per capita (current US$)", "Population (Total)", "GINI index", "GNI per capita Atlas method (current US$)", "GDP (current US$)"]
 
 OLY_rows = csv.reader(open('olympics_2012_Clean.csv', 'r'), delimiter=',', quotechar='"')
@@ -71,6 +93,12 @@ for row in WB_rows:
 						CountriesData[Country][PureMeasure+'|'+Filter] = 0.0
 					for Filter in Filters['Sport']:
 						CountriesData[Country][PureMeasure+'|'+Filter] = 0.0
+			if Country not in CountryGroupMedals:
+				CountryGroupMedals[Country] = {}
+				CountryGroupAthletes[Country] = {}
+				for Group in SportGroupings:
+					CountryGroupMedals[Country][Group] = 0.0
+					CountryGroupAthletes[Country][Group] = 0.0
 
 			for i in range(len(Values)-1, -1, -1):
 				if Values[i] != '':
@@ -102,6 +130,12 @@ for row in OLY_rows:
 			AthleteBronze = float(row[11])
 		else:
 			AthleteBronze = 0.0
+
+		if AthleteSport in Sport2Group:
+			CountryGroupMedals[Country][Sport2Group[AthleteSport]] += AthleteMedals
+			CountryGroupAthletes[Country][Sport2Group[AthleteSport]] += 1.0
+			GroupTotalMedals[Sport2Group[AthleteSport]] += AthleteMedals
+			GroupTotalAthletes[Sport2Group[AthleteSport]] += 1.0
 		
 		CountriesData[Country]['Medals'] += AthleteMedals
 		if AthleteMedals > 0.0:
@@ -161,6 +195,48 @@ fout = open('data_joined_w_filter.json', 'w')
 fout.write(jsonOut)
 fout.close()
 
+
+jsonOutMedals = '{'
+jsonOutMedalsPCT = '{'
+for Country in CountryGroupMedals:
+	jsonOutMedals += '"'+Country+'":{'
+	jsonOutMedalsPCT += '"'+Country+'":{'
+	for Group in CountryGroupMedals[Country]:
+		jsonOutMedals += '"'+Group+'":'+str(CountryGroupMedals[Country][Group])+', '
+		jsonOutMedalsPCT += '"'+Group+'":'+str(CountryGroupMedals[Country][Group]/GroupTotalMedals[Group])+', '
+	jsonOutMedals = jsonOutMedals[0:-2] + '}, '
+	jsonOutMedalsPCT = jsonOutMedalsPCT[0:-2] + '}, '
+jsonOutMedals = jsonOutMedals[0:-2] + '}'
+jsonOutMedalsPCT = jsonOutMedalsPCT[0:-2] + '}'
+
+fout = open('spiderMedals.json', 'w')
+fout.write(jsonOutMedals)
+fout.close()
+
+fout = open('spiderMedalsPCT.json', 'w')
+fout.write(jsonOutMedalsPCT)
+fout.close()
+
+jsonOutAthletes = '{'
+jsonOutAthletesPCT = '{'
+for Country in CountryGroupAthletes:
+	jsonOutAthletes += '"'+Country+'":{'
+	jsonOutAthletesPCT += '"'+Country+'":{'
+	for Group in CountryGroupAthletes[Country]:
+		jsonOutAthletes += '"'+Group+'":'+str(CountryGroupAthletes[Country][Group])+', '
+		jsonOutAthletesPCT += '"'+Group+'":'+str(CountryGroupAthletes[Country][Group]/GroupTotalAthletes[Group])+', '
+	jsonOutAthletes = jsonOutAthletes[0:-2] + '}, '
+	jsonOutAthletesPCT = jsonOutAthletesPCT[0:-2] + '}, '
+jsonOutAthletes = jsonOutAthletes[0:-2] + '}'
+jsonOutAthletesPCT = jsonOutAthletesPCT[0:-2] + '}'
+
+fout = open('spiderAthletes.json', 'w')
+fout.write(jsonOutAthletes)
+fout.close()
+
+fout = open('spiderAthletesPCT.json', 'w')
+fout.write(jsonOutAthletesPCT)
+fout.close()
 
 
 

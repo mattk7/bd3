@@ -214,18 +214,23 @@ function showCountryWeb(country){
     $("#chart svg").remove();
     var items = [];
     
-    $.getJSON('./Data/data_joined_w_filter.json', function(data) {
          //getting all the keys, i.e. column titles that start with Medals|
+    $.getJSON('./Data/spiderMedalsPCT.json', function(data) {
          $.each(data[country], function( key, val ) {
-             if (key.match("^Medals\\|") && key!= "Medals|F" && key!= "Medals|M" && val>0) {
+
                 items.push({
                     axis: key,
                     value: val || 0});
-             }
-             });
+	});
         $("body svg").fadeTo("fast", 0.5, function() {
-            if(items.length == 0)
-                $("#chartAlert").html(country + " has no medals");            
+		var sum = 0
+	$.each(items, function(key, val){
+		sum += items.val
+	})
+	console.log(sum)
+            if(sum == 0)
+                $("#chartAlert").html(country + " has no medals");
+      
              else
                 displayWeb(items, country);
             
@@ -254,7 +259,7 @@ function displayWeb(items, country){
     var mycfg = {
       w: w,
       h: h,
-      maxValue: 0.6,
+      maxValue: 0.3,
       levels: 6,
       ExtraWidthX: 200
     }
