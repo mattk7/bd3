@@ -257,7 +257,8 @@ function start() {
             //Update the tooltip values
             d3.select("#tooltip")
             .style("left", 960 + "px")
-            .style("top", 45 + "px")
+            .style("top", 48 + "px")
+            .style("border", 1)
             .select("#nameTT")
             .text(getInfoName(d))
 
@@ -300,7 +301,6 @@ function start() {
             .style('fill', function (d, i) {
                 return "black";
             })
-            
 
         //legend
         LEGEND_WIDTH = 200

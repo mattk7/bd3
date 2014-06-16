@@ -3,7 +3,6 @@
         <script src="d3.min.js"></script>
         <script src="colorbrewer.js"></script>
         <title>Stacked Weight</title>
-        
         <style>
             body {
               overflow: hidden;
@@ -687,7 +686,17 @@ function update_stack(widget_sports){
     }
 
             
+<!-- conflict start -->
+        <link rel="stylesheet" type="text/css" href="olympic_stack.css">
+    </head>
+    <body>
+        <svg></svg>
+        <div id="buttons"></div>
+        <div id="widget_container"></div>
+<!-- conflict end -->
 
-        </script>
+        <script src="stack.js"></script>
+        <script src="selectors.js"></script>
+        <script src="pie.js"></script>
     </body>
 </html>

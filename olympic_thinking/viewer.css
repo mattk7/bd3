@@ -37,7 +37,8 @@ body {
 }
 
 #titleBar {
-    width:1000px; 
+    width:100%;
     text-align: center;
-    font-size: large; 
+    font-size: large;
+    font-weight: 400; 
 }
