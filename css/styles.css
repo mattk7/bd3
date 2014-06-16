@@ -33,7 +33,7 @@ body {
     text-transform:uppercase;
 }
 #menu {
-    height: 180px;
+    height: 160px;
     position: absolute;
     top: 0;
     left: 60%;
@@ -112,21 +112,30 @@ svg {
 }
 
 #TopVariable{
-    background: url(../images/upperGraphIcon.png) 2px 2px #323232 no-repeat;
+    background: url(../images/upperGraphIcon.png) 4px #323232 no-repeat;
     text-indent:50px;
-    height: 30px;
+    height: 32px;
 }
 
 #BottomVariable{
-    background: url(../images/lowerGraphIcon.png) 2px 2px #323232 no-repeat;
+    margin-top: 10px;
+    background: url(../images/lowerGraphIcon.png) 4px #323232 no-repeat;
     text-indent:50px;
-    height: 30px;
+    height: 32px;
 }
 
 #Filter{
-    background: url(../images/filterIcon.png) 2px 2px #323232 no-repeat;
+    margin-top: 10px;
+    background: url(../images/filterIcon.png) 4px #323232 no-repeat;
     text-indent:50px;
-    height: 30px;
+    height: 32px;
+}
+
+#Sort{
+    margin-top: 10px;
+    background: url(../images/filterIcon.png) 4px #323232 no-repeat;
+    text-indent:50px;
+    height: 32px;
 }
 
 #chart {
