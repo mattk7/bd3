@@ -215,7 +215,8 @@ function randomFail(){
 }
 
 function showCountryWeb(country){
-    $("#chartAlert").html("");
+    //$("#chartAlert").html("");
+    $("#imageFail").html("");
     $("#chart svg").remove();
     var items = [];
     
