@@ -79,10 +79,10 @@
                         // highlighting
                     
                         d3.select(this).select('.up')
-                        .attr("fill", "red") // "#FE9900"
+                        .attr("fill", "#e41a1c") // "#FE9900"
 
                         d3.select(this).select('.down')
-                        .attr("fill", "red") // "#514554"
+                        .attr("fill", "#e41a1c") // "#514554"
                         // text
                         g_i.append('text')
                         .attr("dy", "-1.75em")
@@ -91,6 +91,7 @@
                         .attr("x", d3.select(this).select('.up').attr("x")) // Center text
                         .attr("transform", d3.select(this).select('.up').attr("transform")) // Center text
                         .style("text-anchor", "top")
+                        .attr("class", "RectTitleText")
                         .text(d3.select(this).select('.up').attr("id"))
                                                 
                         })

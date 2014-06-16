@@ -138,6 +138,11 @@ svg {
     height: 32px;
 }
 
+.RectTitleText{
+    font: 300 18px/140% "MyriadPro-Regular", "Myriad Pro Regular", MyriadPro, "Myriad Pro", Calibri, sans-serif;
+    fill: #e41a1c;
+}
+
 #chart {
     width: 600px;
     height: 550px;

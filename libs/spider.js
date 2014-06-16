@@ -210,7 +210,7 @@ var RadarChart = {
 };
 
 function randomFail(){
- var images = ["../images/fail.jpg", "../images/fail_woman.jpg"]
+ var images = ["./images/fail.jpg", "./images/fail_woman.jpg"]
  return images[Math.floor((Math.random() * images.length))] ;   
 }
 
