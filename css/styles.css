@@ -59,7 +59,7 @@ div.varSelects {
     padding-top: 10px;
     padding-bottom: 5px;
     box-sizing: border-box;
-    color: #cbcbcb;
+    color: #cbcbcb;    
 }
 
 select {
@@ -109,6 +109,24 @@ svg {
 .lowerLabel {
     font: 300 18px/140% "MyriadPro-Regular", "Myriad Pro Regular", MyriadPro, "Myriad Pro", Calibri, sans-serif;
     fill: #514554;
+}
+
+#TopVariable{
+    background: url(../images/upperGraphIcon.png) 2px 2px #323232 no-repeat;
+    text-indent:50px;
+    height: 30px;
+}
+
+#BottomVariable{
+    background: url(../images/lowerGraphIcon.png) 2px 2px #323232 no-repeat;
+    text-indent:50px;
+    height: 30px;
+}
+
+#Filter{
+    background: url(../images/filterIcon.png) 2px 2px #323232 no-repeat;
+    text-indent:50px;
+    height: 30px;
 }
 
 #chart {
@@ -162,4 +180,10 @@ svg {
     background-color: #FF0000;
     text-align: center;
 }
-    
+
+#imageFail {
+    width: auto;
+    margin: auto;
+    background-color: #FF0000;
+    text-align: center;
+}

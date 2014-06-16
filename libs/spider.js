@@ -230,9 +230,12 @@ function showCountryWeb(country){
 
             console.log(sum);
             
-            if(sum == 0)
-                $("#chartAlert").html(country + " has no medals");
-      
+            if(sum == 0){
+                //$("#chartAlert").html(country + " has no medals");
+                $("#imageFail").html('<img src="../images/fail.jpg" alt="some_text">');
+                
+            
+            }
              else
                 displayWeb(items, country);
             
