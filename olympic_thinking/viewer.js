@@ -60,11 +60,11 @@ function start() {
     var CHART_X = 50;
     var CHART_Y = 20;
     var INNER_WIDTH = 900;
-    var INNER_HEIGHT = 550;
+    var INNER_HEIGHT = 480;
     var AXIS_MARGIN = 10;
     
-    var COLOR_MALE = '#5BADFF';
-    var COLOR_FEMALE = '#FFC25B';
+    var COLOR_MALE = '#5B97CC';
+    var COLOR_FEMALE = '#D47874';
 
     var svg = d3.select('svg');
 
@@ -75,7 +75,7 @@ function start() {
         var sport_names = nested_data.map(function (d) { return d.key });
         console.log("NAMES", sport_names);
         
-        var age_range = [10, 80];
+        var age_range = [10, 75];
         var range_x = [-0.7, sport_names.length - 0.3];
         
         var chart = svg.append('g')
