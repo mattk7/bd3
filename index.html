@@ -72,22 +72,21 @@
                     .on('mouseover', function(d,i) { 
                         var g_i = d3.select(this)
                         // highlighting
-                        var rect_i = g_i.selectAll('rect')                 
-                                                                    
-                        d3.select(rect_i[0][0])
+                    
+                        d3.select(this).select('.up')
                         .attr("fill", "red") // "#FE9900"
 
-                        d3.select(rect_i[0][1])
+                        d3.select(this).select('.down')
                         .attr("fill", "red") // "#514554"
                         // text
                         g_i.append('text')
                         .attr("dy", "-1.75em")
                         .attr('font-size',"20px")
-                        .attr("y", d3.select(rect_i[0][0]).attr("y")) // Center text
-                        .attr("x", d3.select(rect_i[0][0]).attr("x")) // Center text
-                        .attr("transform", d3.select(rect_i[0][0]).attr("transform")) // Center text
+                        .attr("y", d3.select(this).select('.up').attr("y")) // Center text
+                        .attr("x", d3.select(this).select('.up').attr("x")) // Center text
+                        .attr("transform", d3.select(this).select('.up').attr("transform")) // Center text
                         .style("text-anchor", "top")
-                        .text(d3.select(rect_i[0][0]).attr("id"))
+                        .text(d3.select(this).select('.up').attr("id"))
                                                 
                         })
                     .on('mouseout', function(d,i) { d3.select(this)
@@ -95,18 +94,17 @@
                         // highlighting
                         var rect_i = g_i.selectAll('rect')                 
                                                                     
-                        d3.select(rect_i[0][0])
+                        d3.select(this).select('.up')
                         .attr("fill", "#FE9900") // "#FE9900"
 
-                        d3.select(rect_i[0][1])
+                        d3.select(this).select('.down')
                         .attr("fill", "#514554") // "#514554"
                         // text
                         g_i.selectAll('text').remove()
                         })
 
                     .on('click', function(d,i) { d3.select(this)
-                        var rect_i = d3.select(this).selectAll('rect')
-                        var countryName = d3.select(rect_i[0][0]).attr("id")
+                        var countryName = d3.select(this).select('.up').attr("id")
                         console.log(countryName)
                         showCountryWeb(countryName);
                         })                    

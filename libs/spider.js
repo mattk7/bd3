@@ -214,20 +214,22 @@ function showCountryWeb(country){
     $("#chart svg").remove();
     var items = [];
     
-         //getting all the keys, i.e. column titles that start with Medals|
+    //populating country's dataset
     $.getJSON('./Data/spiderMedalsPCT.json', function(data) {
          $.each(data[country], function( key, val ) {
-
                 items.push({
                     axis: key,
                     value: val || 0});
-	});
+	   });
         $("body svg").fadeTo("fast", 0.5, function() {
-		var sum = 0
-	$.each(items, function(key, val){
-		sum += items.val
-	})
-	console.log(sum)
+            var sum = 0;
+
+            for (var item in items) {
+                sum += items[item].value;
+            }
+
+            console.log(sum);
+            
             if(sum == 0)
                 $("#chartAlert").html(country + " has no medals");
       
