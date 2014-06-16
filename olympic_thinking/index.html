@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="d3.v3.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="viewer.js"></script>
+<link rel="stylesheet" href="viewer.css" />
+  <meta charset="utf-8"></meta>
+  <title>Olympic thinking</title>
+</head>
+<body>
+<div id="titleBar">Gold Medals Won at the 2012 Olympics by Age and Event</div>
+  <svg style="width: 1000px; height: 750px; background: #fff">
+  </svg>
+    <div id="tooltip">
+        <p id="numberAthletes"><strong>Total Number of Athletes:  <span id="allAthletesTT"></span></strong></p>
+        <div id="breakline"></div>
+        <div id="infoPar">
+            <p class="titleInfoTT">Gold Medal Winner(s):</p>
+            <p class="sectionInfoTT">Number of Gold Medals:<br> <span id="medalsTT"></span></p><br>
+            <p class="sectionInfoTT">Name(s):<br> <span id="nameTT"></span></p><br>
+            <p class="sectionInfoTT">Age(s):<br> <span id="ageTT"></span></p><br>
+            <p class="sectionInfoTT">Country(ies):<br> <span id="countryTT"></span></p><br>
+        </div>
+    </div>
+</body>
+</html>
