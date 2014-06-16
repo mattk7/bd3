@@ -180,4 +180,10 @@ svg {
     background-color: #FF0000;
     text-align: center;
 }
-    
+
+#imageFail {
+    width: auto;
+    margin: auto;
+    background-color: #FF0000;
+    text-align: center;
+}
