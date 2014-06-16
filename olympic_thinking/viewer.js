@@ -92,6 +92,7 @@ function start() {
             .orient('bottom')
             .tickValues(d3.range(sport_names.length))
             .tickSize(10)
+            .outerTickSize(0)
             .tickFormat('');
         var axis_x_g = chart.append('g')
             .attr('class', 'axis_x')
