@@ -18,7 +18,7 @@ var svg = d3.select("div#widget_container").append('div')
         return i
     })
     .append("svg")
-    .attr("width", 1000)
+    .attr("width", 900)
     .attr("height", pie_height)
   .append("g")
     .attr("transform", "translate(" + pie_width / 2 + "," + pie_height / 2 + ")")
@@ -37,13 +37,14 @@ function make_pie(pie_data) {
 
     var allPies = svg.selectAll('g.pie')
         .data(pie_data)
-        .enter()
+    
+    allPies.enter()
         .append('g')
         .attr('class', 'pie')
       .attr("transform", function(d,i){
           return "translate(" + i * pie_width + ", 0)"
       })
-
+    allPies.exit().remove()
 
   var grPie = allPies.selectAll("path")
       .data(function(d){return pie(d.values)})
