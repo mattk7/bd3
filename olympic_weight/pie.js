@@ -10,7 +10,7 @@ var pie_arc = d3.svg.arc()
     .innerRadius(pie_radius * 0.5)
 
 var pie = d3.layout.pie()
-    .value(function(d, i) { return d.values.length })
+    .value(function(d){return d.values.length })
 
 var svg = d3.select("div#widget_container").append('div')
     .attr('class', 'single_widget')
@@ -18,7 +18,7 @@ var svg = d3.select("div#widget_container").append('div')
         return i
     })
     .append("svg")
-    .attr("width", pie_width)
+    .attr("width", 1000)
     .attr("height", pie_height)
   .append("g")
     .attr("transform", "translate(" + pie_width / 2 + "," + pie_height / 2 + ")")
@@ -35,21 +35,23 @@ function make_pie(pie_data) {
 //    }
 //    console.log('pie_array', pie_array)
 
-    var grPie = svg.selectAll('g.pie')
+    var allPies = svg.selectAll('g.pie')
         .data(pie_data)
         .enter()
         .append('g')
         .attr('class', 'pie')
-        
-  grPie.selectAll("path")
-      .data(function(d){
-          return pie( d.values )
+      .attr("transform", function(d,i){
+          return "translate(" + i * pie_width + ", 0)"
       })
-  
+
+
+  var grPie = allPies.selectAll("path")
+      .data(function(d){return pie(d.values)})
+
   grPie.enter()
       .append("path")
       .attr("d", pie_arc)
-      .style("fill", function(d){return pie_color(d.data.gender)})
+      .style("fill", function(d){return pie_color(d.data.values)})
 /*
   .append("text")
       .attr("transform", function(d) { return "translate(" + pie_arc.centroid(d) + ")" })
