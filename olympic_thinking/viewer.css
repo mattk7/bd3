@@ -1,3 +1,7 @@
+body {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+}
+
 .axis_x .domain,
 .axis_y .domain {
     fill: none;
@@ -6,4 +10,35 @@
 
 .axis_x line {
     stroke: black;
+}
+
+#tooltip {
+    position: absolute;
+    width: 250px;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    border-style:solid;
+    border-color: #D3D3D3;
+    pointer-events: none;
+}
+
+
+#tooltip p {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    white-space: wrap;
+}
+
+.titleInfoTT {
+    color: gold;
+}
+
+#titleBar {
+    width:100%; 
+    text-align: center;
+    font-size: large;
+    font-weight: 400; 
 }
