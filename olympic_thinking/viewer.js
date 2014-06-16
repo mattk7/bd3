@@ -63,8 +63,8 @@ function start() {
     var INNER_HEIGHT = 550;
     var AXIS_MARGIN = 10;
     
-    var COLOR_MALE = '#f9cc8e';
-    var COLOR_FEMALE = '#d6e3a0';
+    var COLOR_MALE = 'green';
+    var COLOR_FEMALE = 'red';
     
     var svg = d3.select('svg');
 
@@ -183,6 +183,7 @@ function start() {
             .attr('height', function (d, i) {
                 return 8;
             })
+            .style('opacity', 0.5)
             .attr('fill', function (d, i) {
                 if (d.key == 'F'){
                     return COLOR_FEMALE;
@@ -307,7 +308,7 @@ function start() {
                     return 0;
                 }
             })
-            .attr('height', 2)
+            .attr('height', 6)
             .style('fill', function (d, i) {
                 return "black";
             })
