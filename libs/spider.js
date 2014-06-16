@@ -209,6 +209,11 @@ var RadarChart = {
   }
 };
 
+function randomFail(){
+ var images = ["../images/fail.jpg", "../images/fail_woman.jpg"]
+ return images[Math.floor((Math.random() * images.length))] ;   
+}
+
 function showCountryWeb(country){
     $("#chartAlert").html("");
     $("#chart svg").remove();
@@ -232,7 +237,8 @@ function showCountryWeb(country){
             
             if(sum == 0){
                 //$("#chartAlert").html(country + " has no medals");
-                $("#imageFail").html('<img src="../images/fail.jpg" alt="some_text">');
+                console.log(randomFail());
+                $("#imageFail").html('<img src="' + randomFail() + '" width = "600" alt="some_text">');
                 
             
             }
