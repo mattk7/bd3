@@ -18,7 +18,7 @@ var svg = d3.select("div#widget_container").append('div')
         return i
     })
     .append("svg")
-    .attr("width", 1000)
+    .attr("width", 900)
     .attr("height", pie_height)
   .append("g")
     .attr("transform", "translate(" + pie_width / 2 + "," + pie_height / 2 + ")")
