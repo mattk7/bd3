@@ -63,9 +63,9 @@ function start() {
     var INNER_HEIGHT = 550;
     var AXIS_MARGIN = 10;
     
-    var COLOR_MALE = 'green';
-    var COLOR_FEMALE = 'red';
-    
+    var COLOR_MALE = '#5BADFF';
+    var COLOR_FEMALE = '#FFC25B';
+
     var svg = d3.select('svg');
 
 
