@@ -1,0 +1,241 @@
+<html>
+    <head>
+        <script src="./libs/jquery-1.11.1.min.js"></script>
+        <script src="./libs/d3.min.js"></script>
+        <script src="./libs/ui.js"></script>    
+        <link href="./css/styles.css" rel="stylesheet" />
+        <title>Olympinomics</title>
+    </head>    
+    <body>
+        <div id="header">
+			<div id="title">
+				<h2>Olympinomics</h2>
+			</div>
+            <div id="menu">
+                <div class="varSelects">
+                  <select id="TopVariable"></select>
+                  <select id="BottomVariable"></select>
+                  <select id="Filter"><option value = "">Choose...</option></select>
+                  <select id="Sort">
+                      <option value = "upVar">Upper Variable</option>
+                      <option value = "downVar">Lower Variable</option>
+                    </select>
+                </div>
+            </div>
+		</div>
+        <div id="chart">
+            <div id="chartTitle"></div>
+            <div id="chartClose"></div>
+            <div id="chartAlert"></div>
+            <div id="imageFail"></div>
+        </div>        
+        <svg id="graphSVG"></svg>
+        <script>
+            var XScreen = window.screen.availWidth
+            var YScreen = window.screen.availHeight
+            var MarginPct = 0.025
+            var xMargin = MarginPct*XScreen
+            var yMargin = MarginPct*YScreen+60
+            
+            var FigureWidth = XScreen - 2*xMargin
+            var FigureHeight = YScreen - 2*yMargin
+            
+            var downVar = "Medals";
+            var upVar = 'Population';
+            var filterVar = '';
+            var sortVar = 'upVar';
+            
+            
+            d3.json('./Data/data_joined_w_filter.json', function(json_data){
+                var data = d3.entries(json_data);
+
+                function update(upVar, downVar, filterVar, sortVar) {
+
+                    if (filterVar == '|' || filterVar == '' || filterVar == undefined) { 
+                        var downVarFilter = downVar;
+                    } else {
+                        var downVarFilter = downVar+filterVar;
+                    }
+                    
+                    data.sort(function(a, b){
+                        return d3.descending(a.value[sortVar == 'upVar' ? upVar : downVarFilter ] || 0, 
+                                             b.value[sortVar == 'upVar' ? upVar : downVarFilter ] || 0)
+                    })
+                    console.log(filterVar)
+                    console.log(downVarFilter);
+
+                    console.log(data);
+
+                    var svg = d3.select('svg#graphSVG')
+                        .attr('width', FigureWidth)
+                        .attr('height', FigureHeight)
+                        .selectAll('g')
+                        .data(data, function(d){return d.key;})
+                        //.data(data)
+
+                    var groups = svg.enter()
+                                .append('g')
+                    .on('mouseover', function(d,i) { 
+                        var g_i = d3.select(this)
+                        // highlighting
+                    
+                        d3.select(this).select('.up')
+                        .attr("fill", "#e41a1c") // "#FE9900"
+
+                        d3.select(this).select('.down')
+                        .attr("fill", "#e41a1c") // "#514554"
+                        // text
+                        g_i.append('text')
+                        .attr("dy", "-1.75em")
+                        .attr('font-size',"20px")
+                        .attr("y", d3.select(this).select('.up').attr("y")) // Center text
+                        .attr("x", d3.select(this).select('.up').attr("x")) // Center text
+                        .attr("transform", d3.select(this).select('.up').attr("transform")) // Center text
+                        .style("text-anchor", "top")
+                        .attr("class", "RectTitleText")
+                        .text(d3.select(this).select('.up').attr("id"))
+                                                
+                        })
+                    .on('mouseout', function(d,i) { d3.select(this)
+                        var g_i = d3.select(this)
+                        // highlighting
+                        var rect_i = g_i.selectAll('rect')                 
+                                                                    
+                        d3.select(this).select('.up')
+                        .attr("fill", "#FE9900") // "#FE9900"
+
+                        d3.select(this).select('.down')
+                        .attr("fill", "#514554") // "#514554"
+                        // text
+                        g_i.selectAll('text').remove()
+                        })
+
+                    .on('click', function(d,i) { d3.select(this)
+                        var countryName = d3.select(this).select('.up').attr("id")
+                        console.log(countryName)
+                        showCountryWeb(countryName);
+                        })                    
+                    
+                    
+                    var upMin = d3.min(data, function(d){
+                        return d.value[upVar] || 0;  
+                    })                
+
+                    var upMax = d3.max(data, function(d){
+                        return d.value[upVar] || 0;  
+                    })                
+
+                    var downMin = d3.min(data, function(d){
+                        return d.value[downVarFilter] || 0;  
+                    })                
+
+                    var downMax = d3.max(data, function(d){
+                        return d.value[downVarFilter] || 0;  
+                    })                
+
+                    var lenRange = FigureHeight/2;
+
+                    var upMap = d3.scale.linear()
+                                    .domain([upMin, upMax])
+                                    .range([0, lenRange]);
+
+                    var downMap = d3.scale.linear()
+                                    .domain([downMin, downMax])
+                                    .range([0, lenRange]);
+                    var startY = lenRange*0.99;
+                    var startX = 10+xMargin;
+                    var barWidth = Math.floor(FigureWidth/data.length);
+
+                    var upRect = groups
+                        .append('rect')
+                        .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
+                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
+                        .attr("class", "up")
+                        .attr("cursor", "pointer")
+
+                    var downRect = groups
+                        .append('rect')
+                        .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
+                        .attr("class", "down")
+                        .attr("cursor", "pointer")
+
+                    var upLabel = d3.select('svg')
+                        .append("text")
+                        .attr("class", "upperLabel")
+
+                    var downLabel = d3.select('svg')
+                        .append('text')
+                        .attr("class", "lowerLabel")
+
+                    svg
+                        .exit()
+                        .remove()                      
+
+                    svg.select('.up')
+                        .attr("fill", "#FE9900")
+                        .attr("x", startX)
+                        .attr("width", barWidth)
+                        .attr("opacity", 0.8)                    
+                        .attr("id", function(d) { return d.key; })
+                        .transition()
+                        .duration(1000)
+                        .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
+                        .attr("height", function(d) { return upMap(d.value[upVar] || 0); })
+                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
+
+
+                    svg.select('.down')
+                        .attr("fill", "#514554")
+                        .attr("x", startX)
+                        .attr("width", barWidth)
+                        .attr("opacity", 0.8)
+                        .attr("id", function(d) { return d.key; })
+                        .transition()
+                        .duration(1000)
+                        .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
+                        .attr("height", function(d) { return downMap(d.value[downVarFilter] || 0); })
+
+                     d3.select('svg').select('.upperLabel')
+                        .text(upVar)
+                        .attr("dy", ".71em")
+                        .attr("y", '40%')
+                        .attr("x", '70%');
+
+                     d3.select('svg').select('.lowerLabel')
+                        .text(downVar)
+                        .attr("dy", ".71em")
+                        .attr("y", '60%')
+                        .attr("x", '70%');
+
+                    return [upVar, downVar, filterVar, sortVar];
+
+            }
+                
+            var Vars = update(upVar, downVar, filterVar, sortVar);
+            console.log(Vars);
+            
+                    
+            d3.select('#chartClose')
+                .on('click', function(){
+                    $("#chart").hide("slow");
+                    $("body svg").fadeTo("fast", 1);
+                })
+
+            d3.select("#TopVariable").on("change", function(){                                    
+                                         Vars = update(d3.event.target.value, Vars[1], Vars[2], Vars[3])                                        
+                                    });
+            
+            d3.select("#BottomVariable").on("change", function(){                                    
+                                         Vars = update(Vars[0] , d3.event.target.value, Vars[2], Vars[3])                                        
+                                    });
+            d3.select("#Filter").on("change", function(){                                    
+                                         Vars = update(Vars[0] , Vars[1], '|'+d3.event.target.value, Vars[3])                                        
+                                    });
+            d3.select("#Sort").on("change", function(){                                    
+                                         Vars = update(Vars[0] , Vars[1], Vars[2], d3.event.target.value)                                        
+                                    });
+            });
+        </script>        
+        <script type="text/javascript" src="./libs/spider.js"></script>
+    </body>
+</html>

@@ -1,0 +1,244 @@
+<html>
+
+    <head>
+        <script src="/home/orion/Desktop/BigDive/2014_06_12/Mored3/libs/d3.min.js"></script>
+    </head>
+    
+    <body>
+        <select id="TopVariable">
+            <option value="GDP per capita (current US$)">GDP per capita (current US$)</option>
+            <option value="Internet users (per 100 people)">Internet users (per 100 people)</option> 
+            <option value="GNI per capita, PPP (current international $)">GNI per capita, PPP (current international $)</option>
+        </select>
+        <select id="BottomVariable">
+            <option value="Medals">Medals</option>
+            <option value="Male_Athletes">Male_Athletes</option> 
+            <option value="Athletes">Athletes</option>
+        </select>
+        
+        
+        <svg height="5000" width="5000"></svg>
+        <script>
+            
+            var alertChange = function() {
+    //get the data value and index from the event
+                var selectedValue = d3.event.target.value;
+                var selectedIndex = d3.event.target.selectedIndex;
+                alert("You selected the option at index " + selectedIndex+ ", with value attribute "+ selectedValue);
+                alert("The text from that option was: " + selection.text());
+                
+            }
+            
+            d3.select("#TopVariable").on("change", alertChange);
+
+            
+            
+            //var CanvasX = 2800
+            //var CanvasY = 1800
+            var CanvasX = 1400
+            var CanvasY = 900
+            var xMargin = 0.1*CanvasX
+            var yMargin = 0.1*CanvasY
+
+            var FigureMidPointY = CanvasY/2
+            var xAxesGap = 0.05*CanvasY
+            
+            var SubFigureYHeight = 0.5*(CanvasY-2*yMargin-xAxesGap)
+            
+            var dropDown = d3.select("#table_container").append("select")
+                    .attr("name", "country-list");
+            
+            d3.json('/home/orion/Desktop/BigDive/2014_06_12/bd3/Data/data_joined.json', function( error, RawData ){
+                //console.log()
+                var CountryData = d3.entries(RawData)
+                console.log(CountryData);
+                console.log(CountryData.length);
+
+                var BottomVariable = 'GDP per capita (current US$)'
+                var TopVariable = 'Female_Athletes'
+
+                CountryData.sort(function(a, b){
+                    return d3.descending(a.value[BottomVariable] || 0, b.value[BottomVariable] || 0)
+                }) 
+                
+                var CountryBars = d3.select('svg')
+                    .selectAll('g')
+                    .data(CountryData)
+                    .enter()
+                    .append('g')
+                
+                var BarWidth = (CanvasX-2*xMargin)/CountryData.length
+                
+                var TopVariableMax = d3.max(CountryData, function(d){
+                        return d.value[TopVariable]
+                })
+                console.log(TopVariableMax);
+                
+                var TopVariableMin = d3.min(CountryData, function(d){
+                        return d.value[TopVariable]
+                })
+                console.log(TopVariableMin);
+
+                console.log(SubFigureYHeight+FigureMidPointY+0.5*xAxesGap);
+                console.log(FigureMidPointY+0.5*xAxesGap);
+                
+                var mapSubFigTop = d3.scale.linear()
+                            .domain([TopVariableMin, TopVariableMax])
+                            .range([0, SubFigureYHeight])
+                
+                CountryBars.append('rect')
+                    .attr('width', BarWidth)
+                    .attr('x', function(d,i){
+                        return i*BarWidth+xMargin;
+                    })
+                    .attr('y', function(d){
+                        return FigureMidPointY-0.5*xAxesGap - mapSubFigTop(d.value[TopVariable]);
+                    })
+                          
+                    .attr('height', function(d){
+                      return mapSubFigTop(d.value[TopVariable]);
+                    })
+
+                
+                var BottomVariableMax = d3.max(CountryData, function(d){
+                        return d.value[BottomVariable]
+                })
+                console.log(BottomVariableMax);
+                
+                var BottomVariableMin = d3.min(CountryData, function(d){
+                        return d.value[BottomVariable]
+                })
+                console.log(BottomVariableMin);
+
+                console.log(SubFigureYHeight+FigureMidPointY+0.5*xAxesGap);
+                console.log(FigureMidPointY+0.5*xAxesGap);
+                
+                var mapSubFigBottom = d3.scale.linear()
+                            .domain([BottomVariableMin, BottomVariableMax])
+                            .range([0, SubFigureYHeight])
+                
+                CountryBars.append('rect')
+                    .attr('width', BarWidth)
+                    .attr('x', function(d,i){
+                        return i*BarWidth+xMargin;
+                    })
+                    .attr('y', function(d){
+                        return FigureMidPointY+0.5*xAxesGap;
+                    })
+                    .attr('height', function(d){
+                      return mapSubFigBottom(d.value[BottomVariable]);
+                    })
+                    
+                    
+                /*
+                    //.attr('y', function(d, i){
+                    //  return i*12
+                    //})
+                    .transition()
+                    .duration(1000)
+            
+                
+                    var countries = d3.select('svg')
+                    .selectAll('g')
+                    .data(mydata)
+                    .enter()
+                    .append('g')
+                    .attr('transform', function(d,i){
+                        return 'translate(0, ' + i*21 + ')';
+                    })
+                    */
+                
+            });
+                
+/*
+                var mydata = d3.nest()
+                            .key(function(d){
+                                return d.Country;
+                            })
+                            .sortKeys(d3.ascending)
+                            .entries(data)
+                
+
+                function update( _data ){
+
+                        var countries = d3.select('svg')
+                            .selectAll('g')
+                            .data(_data, function(d){
+                                return d.key;
+                            })
+
+                        countries.enter()
+                            .append('g')
+                            .style('opacity', 1)
+                            .attr('transform', function(d,i){
+                                return 'translate(0, ' + i*21 + ')';
+                            })
+
+                        countries.exit()
+                            .transition()
+                            .duration(3000)
+                            .style('opacity', 0)
+                            .remove()
+
+                        var min = d3.min(_data, function(d){
+                            return d3.min(d.values, function(c){
+                                return c.Age;
+                            })
+                        })
+                        console.log(min)
+
+                        var max = d3.max(_data, function(d){
+                            return d3.max(d.values, function(c){
+                                return c.Age;
+                            })
+                        })
+                        console.log(max)
+
+                        countries.append('rect')
+                            .attr('width', 50)
+                            .attr('height', 20)
+
+                        var mapCol = d3.scale.linear()
+                            .domain([min , max])
+                            .range(['#fff', '#000'])
+
+                        // each circle is now an athlete
+                        countries.selectAll('circle')
+                            .data(function(d, i){
+                                return d.values;
+                            })
+                            .enter()
+                            .append('circle')
+                            .attr('r', 3)
+                            .attr('cx', function(d, i){
+                                return 60 + i*7;
+                            })
+                            .attr('cy', 10)
+                            .style('fill', function(d, i){
+                                return mapCol( d.Age )
+                            })
+
+                        console.log(_data)
+
+                }
+            
+
+            update(mydata);
+            
+            d3.select('#btn')
+                .on('click', function(){
+                    console.log('clicked:')
+                    var newdata = mydata.filter(function(d){
+                        return (d.values.length < 20 )
+                    })
+                    update(newdata)
+                })
+        })
+*/
+        
+        </script>
+    </body>
+
+    
+
+</html>

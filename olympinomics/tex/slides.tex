@@ -1,0 +1,90 @@
+\documentclass[9pt]{beamer}		% Use for slides
+%\documentclass[handout]{beamer}	% Usa for handout (no overlays!)
+
+
+\mode<presentation> {
+  %\setbeamertemplate{background canvas}[vertical shading][bottom=red!12,top=blue!12]
+  %\setbeamertemplate{background canvas}[vertical shading][bottom=red!12,top=blue!12]
+  %\setbeamertemplate{background canvas}[vertical shading][bottom=white,top=structure.fg!25]
+ %\usetheme{Darmstadt}
+\usetheme{Frankfurt}%
+%\usetheme{CambridgeUS}
+%\usetheme{Boadilla}
+  \usecolortheme{default}
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+ }
+\setbeamertemplate{itemize items}[default]
+\usepackage[english]{babel}
+\usepackage[applemac]{inputenc} %usare quando si compila con MacOs X
+
+%\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage{cancel}
+% \usepackage{ulem}
+\usepackage{eso-pic}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage{fourier}
+\usepackage{pgf} 
+\usepackage{tikz}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\usepackage{bm}
+\usepackage{dcolumn}
+\usepackage{multicol}
+\usepackage{subfigure}
+\usepackage{movie15}
+\usepackage{fix-cm}
+\usepackage{color}
+\usepackage[percent]{overpic}
+% \usepackage{mathpazo}
+\usetikzlibrary{arrows,shapes,positioning,matrix}
+
+\newcounter{row}
+\newcounter{col}
+
+\newcommand\setrow[9]{
+  \setcounter{col}{1}
+  \foreach \n in {#1, #2, #3, #4, #5, #6, #7, #8, #9} {
+    \edef\x{\value{col} - 0.5}
+    \edef\y{9.5 - \value{row}}
+    \node[anchor=center] at (\x, \y) {\n};
+    \stepcounter{col}
+  }
+  \stepcounter{row}
+}
+\newcommand{\Rho}{\mathrm{P}}
+
+
+
+%\input{tcilatex}
+
+\title[Olympinomics] {Olympinomics}
+\author{Matteo Chinazzi, Meltem G\:urel, Orion Penner}
+
+\begin{document}
+
+%  {
+%  \usebackgroundtemplate{\includegraphics[width=\paperwidth]{../IFN_net/images/Net2008.png}}%
+\begin{frame}%[plain]
+  \titlepage
+\end{frame}
+%  }
+
+\begin{frame}
+     \begin{center}
+            \includegraphics[width=1\textwidth]{../images/image.jpeg}
+    \end{center}
+\end{frame}
+
+
+
+\end{document}
