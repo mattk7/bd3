@@ -37,13 +37,14 @@ function make_pie(pie_data) {
 
     var allPies = svg.selectAll('g.pie')
         .data(pie_data)
-        .enter()
+    
+    allPies.enter()
         .append('g')
         .attr('class', 'pie')
       .attr("transform", function(d,i){
           return "translate(" + i * pie_width + ", 0)"
       })
-
+    allPies.exit().remove()
 
   var grPie = allPies.selectAll("path")
       .data(function(d){return pie(d.values)})
