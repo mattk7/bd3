@@ -1,4 +1,4 @@
-// http://bl.ocks.org/mbostock/3020685
+// This looks like a good example: http://bl.ocks.org/mbostock/3020685
 
 var height = 600; // canvas height
 var width = 1000; // canvas width
@@ -29,9 +29,11 @@ var area = d3.svg.area()
     .y1(function(d){return y(d.y0+d.y) })
     .interpolate('cardinal');
 
+            
+            
 // The plotter
 function plotter(stackedData) {
-    console.log(stackedData)
+    console.log('stackedData',stackedData)
     index_last_stack=stackedData.length-1
     y_dom = [0, 1.1* d3.max(stackedData[index_last_stack].values, function(d) { return d.y0+d.y; })]
      
@@ -77,7 +79,10 @@ function plotter(stackedData) {
         .transition()
         .duration(250)
         .remove(); 
+    
 
+
+    
 d3.csv('data/olympics_2012_clean.csv', function(data){
 ///////////////
 
@@ -102,7 +107,7 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
         .entries(data)
 
     /* Create the lookup table */
-    var tableGold = [];
+//    var tableGold = [];
 //    sportWeight.forEach(function(d){
 //        tableGold[d.key] = [];
 //    })
@@ -114,34 +119,19 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
 //            })
 //        }
 //    });
-    golds.forEach(function(d) {
-        if (d.key != 0){
-            d.values.forEach(function(d){
-                tableGold.push({'key': d.Sport, 'values': [{'Weight': d.Weight}]});
-            })
-        }
-    });
+//    golds.forEach(function(d) {
+//        if (d.key != 0){
+//            d.values.forEach(function(d){
+//                tableGold.push({'key': d.Sport, 'values': [{'Weight': d.Weight}]});
+//            })
+//        }
+//    });
 
-    tableGold = d3.nest()
-        .key(function(d){
-            return d.Sport;
-        })
-        .entries(data);
+    var tableGold = stackedData
     
     
-    console.log(tableGold);
-    var medalContainer = svg.append('g')
-        .attr('class', 'medalContainer')
-        .selectAll('g.medalContainer')
-        .data(tableGold, function(d){ return d.key; });
-
-    medalContainer.exit().remove();
-
-    medalContainer
-    .enter()
-    .append("g")
-        .attr('class', 'sportMedals')
-
+    console.log('table',tableGold);
+    
     function interpY(d) {
         xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
         p1 = stackedData[0].values[xValues.indexOf(xClosest)-1]
@@ -155,26 +145,55 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
     return y(yGold);
     }
     
-    medalContainer
-        .transition()
-        .duration(600)
-        .each(function(d) {
-//            console.log(d)
-            var medalGroup = d3.select(this)
+    
+    var selectedWeight = data.filter(function(d){
+    selectedKeys=[]
+    for(s in widget_sports){
+        selectedKeys.push(widget_sports[s].key)
+    }
+    return ( selectedKeys.indexOf(d.key) > -1 )
+    })
+    
+    var medalContainer = temptemp 
+        .selectAll('g.sportMedals')
+        .data(tableGold, function(d){ return d.key; });
 
+    
+    var medalsEnter = medalContainer.enter()
+        .append('g')
+        .attr('class', 'sportMedals')
+    
+    
+    
+    medalContainer.exit()
+        .remove()
+    
+    
+    
+    medalsEnter.selectAll('circle')
+        .data(function(d){
+            return d.values
+        })
+        .enter()
+        .append('circle')
+    
+    medalContainer
+        .each(function(d) {
             d.values.forEach(function(dd){
-//                console.log(dd)
+
                 if(dd.Gold != 0) {          
-                    medalGroup.append('circle')
-                    .attr('class', 'gold')
-                    .attr("cx", x(dd.Weight))
-                    .attr("cy", interpY(dd))
-                    .attr('r', 5)
+//console.log('ads',this)
+//                    .append('circle')
+//                    .attr('class', 'gold')
+//                    .attr("cx", x(dd.Weight))
+//                    .attr("cy", interpY(dd))
+//                    .attr('r', 5)
                 }
 
 
             })    
         });
+
 
            //--------  HOVER
 
@@ -232,8 +251,10 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
 
 });
 
+    
 } // END plotter
-
+            
+            
 var svg = d3.select("svg")
     .attr("width", w + m[1] + m[3])
     .attr("height", h + m[0] + m[2])
@@ -274,7 +295,7 @@ svg.append("svg:g")
 
             
 var stackcontainer = svg.append('g').attr('class', 'stackcontainer')
-
+var temptemp = svg.append('g').attr('class', 'medalContainer')
 //////////////////////////
 // The CSV function
 d3.csv("data/hist.csv", function(data) {
@@ -314,9 +335,12 @@ d3.csv("data/hist.csv", function(data) {
   x_dom_zoom = [40, 120]; //just a small part of domain
   
     plotter(stackValues)
-
+    
 });  // d3.csv END
-
+            
+            
+           
+            
 // On click, update the x-axis.
 //svg.on("click", function() {
 //  var new_dom = x.domain()[0] - x_dom[0] ? x_dom : x_dom_zoom;
