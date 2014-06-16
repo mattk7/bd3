@@ -42,3 +42,10 @@ body {
     font-size: large;
     font-weight: 400; 
 }
+
+svg .cluster-column rect:hover {
+    stroke: #777;
+    stroke-width: 3;
+    rx: 3;
+    ry: 0;
+}
