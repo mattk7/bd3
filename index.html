@@ -37,8 +37,8 @@
             var FigureWidth = XScreen - 2*xMargin
             var FigureHeight = YScreen - 2*yMargin
             
-            var upVar = "Medals";
-            var downVar = 'Population';
+            var downVar = "Medals";
+            var upVar = 'Population';
             var filterVar = '';
             
             
@@ -47,16 +47,16 @@
 
                 function update(upVar, downVar, filterVar) {
                     data.sort(function(a, b){
-                        return d3.descending(a.value[downVar] || 0, b.value[downVar] || 0)
+                        return d3.descending(a.value[upVar] || 0, b.value[upVar] || 0)
                     })
                     console.log(filterVar)
                     if (filterVar == '|' || filterVar == '' || filterVar == undefined) { 
-                        var upVarFilter = upVar;
+                        var downVarFilter = downVar;
                     } else {
-                        var upVarFilter = upVar+filterVar;
+                        var downVarFilter = downVar+filterVar;
                     }
                     
-                    console.log(upVarFilter);
+                    console.log(downVarFilter);
 
                     console.log(data);
 
@@ -113,19 +113,19 @@
                     
                     
                     var upMin = d3.min(data, function(d){
-                        return d.value[upVarFilter] || 0;  
+                        return d.value[upVar] || 0;  
                     })                
 
                     var upMax = d3.max(data, function(d){
-                        return d.value[upVarFilter] || 0;  
+                        return d.value[upVar] || 0;  
                     })                
 
                     var downMin = d3.min(data, function(d){
-                        return d.value[downVar] || 0;  
+                        return d.value[downVarFilter] || 0;  
                     })                
 
                     var downMax = d3.max(data, function(d){
-                        return d.value[downVar] || 0;  
+                        return d.value[downVarFilter] || 0;  
                     })                
 
                     var lenRange = FigureHeight/2;
@@ -144,7 +144,7 @@
                     var upRect = groups
                         .append('rect')
                         .attr('transform', function(d, i){return 'translate(' + i*startX*0 + ',' + startY + ')'; })
-                        .attr("y", function(d) { return -upMap(d.value[upVarFilter] || 0); })
+                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
                         .attr("class", "up")
                         .attr("cursor", "pointer")
 
@@ -175,8 +175,8 @@
                         .transition()
                         .duration(1000)
                         .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
-                        .attr("height", function(d) { return upMap(d.value[upVarFilter] || 0); })
-                        .attr("y", function(d) { return -upMap(d.value[upVarFilter] || 0); })
+                        .attr("height", function(d) { return upMap(d.value[upVar] || 0); })
+                        .attr("y", function(d) { return -upMap(d.value[upVar] || 0); })
 
 
                     svg.select('.down')
@@ -188,7 +188,7 @@
                         .transition()
                         .duration(1000)
                         .attr('transform', function(d, i){return 'translate(' + i*barWidth + ',' + startY + ')'; })
-                        .attr("height", function(d) { return downMap(d.value[downVar] || 0); })
+                        .attr("height", function(d) { return downMap(d.value[downVarFilter] || 0); })
 
                      d3.select('svg').select('.upperLabel')
                         .text(upVar)
