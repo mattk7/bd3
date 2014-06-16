@@ -125,3 +125,15 @@ path.area {
     stroke-width: 2px;
     fill: #FFEA00;
 }
+
+.button_style{
+    background-color: white;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    color: black;
+    font-family: 'Oswald';
+    font-size: 20px;
+    text-decoration: none;
+    border:none;
+}
