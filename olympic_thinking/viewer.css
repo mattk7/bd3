@@ -33,19 +33,38 @@ body {
 }
 
 .titleInfoTT {
-    color: gold;
+    font-weight: 800;
 }
 
 #titleBar {
-    width:100%;
+    width:100%; 
     text-align: center;
-    font-size: large;
-    font-weight: 400; 
+    font-size: 120%;
+    font-weight: 800; 
 }
+
+#breakline{
+    height:20px;
+    width: 100%;
+    background-color: transparent; 
+}
+
+#numberAthletes {
+    height: 20px;
+    width:100%;
+    font-size: 120%;
+}
+
+#allAthletesTT {
+    padding-left: 10px;
+}
+
+#infoPar {
+    padding-left: 10px;
+}
+
 
 svg .cluster-column rect:hover {
     stroke: #777;
     stroke-width: 3;
-    rx: 3;
-    ry: 0;
 }

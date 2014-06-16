@@ -60,12 +60,12 @@ function start() {
     var CHART_X = 50;
     var CHART_Y = 20;
     var INNER_WIDTH = 900;
-    var INNER_HEIGHT = 550;
+    var INNER_HEIGHT = 480;
     var AXIS_MARGIN = 10;
     
-    var COLOR_MALE = '#f9cc8e';
-    var COLOR_FEMALE = '#d6e3a0';
-    
+    var COLOR_MALE = '#5B97CC';
+    var COLOR_FEMALE = '#D47874';
+
     var svg = d3.select('svg');
 
 
@@ -75,7 +75,7 @@ function start() {
         var sport_names = nested_data.map(function (d) { return d.key });
         console.log("NAMES", sport_names);
         
-        var age_range = [10, 80];
+        var age_range = [10, 75];
         var range_x = [-0.7, sport_names.length - 0.3];
         
         var chart = svg.append('g')
@@ -183,6 +183,7 @@ function start() {
             .attr('height', function (d, i) {
                 return 8;
             })
+            .style('opacity', 0.5)
             .attr('fill', function (d, i) {
                 if (d.key == 'F'){
                     return COLOR_FEMALE;
@@ -242,20 +243,26 @@ function start() {
                 return countriesArray; 
             }
 
- /*           function getInfoEvent(d,i){
-                sportArray = [];
+        function getInfoAge(d,i){
+                ageArray = [];
                 for (i=0; i<d.values.length; i++){
                     
                     if (d.values[i].Gold){
-                        var eventTTinfo = d.values[i].Event;
-                        sportArray.push(eventTTinfo);
+                        var ageTTinfo = d.values[i].Age;
+                        ageArray.push(ageTTinfo);
                     }
                 }
-                return sportArray; 
+               return ageArray[0]; 
             }
-*/            
+            
+            function getAllAthletes(d,i){
+                
+                console.log(d.values.length)
+                return d.values.length;
+            }
+            
 
-            //Update the tooltip values
+                        //Update the tooltip values
             d3.select("#tooltip")
             .style("left", 960 + "px")
             .style("top", 48 + "px")
@@ -267,14 +274,17 @@ function start() {
             .select("#countryTT")
             .text(getInfoCountry(d))
 
- /*           d3.select("#tooltip")
-            .select("#sportTT")
-            .text(getInfoEvent(d))
-*/
+            d3.select("#tooltip")
+            .select("#ageTT")
+            .text(getInfoAge(d))
+
             d3.select("#tooltip")
             .select("#medalsTT")
             .text(getInfoMedals(d))
-
+            
+            d3.select("#tooltip")
+            .select("#allAthletesTT")
+            .text(getAllAthletes(d))
         });
 
         
@@ -298,7 +308,7 @@ function start() {
                     return 0;
                 }
             })
-            .attr('height', 2)
+            .attr('height', 6)
             .style('fill', function (d, i) {
                 return "black";
             })

@@ -9,14 +9,19 @@
   <title>Olympic thinking</title>
 </head>
 <body>
-<div id="titleBar"> Comparison of Gold Medals Won at the 2012 Olympics by Age and Event</div>
+<div id="titleBar">Gold Medals Won at the 2012 Olympics by Age and Event</div>
   <svg style="width: 1000px; height: 750px; background: #fff">
   </svg>
     <div id="tooltip">
-        <p><strong>Gold Medal Winner(s):</strong></p>
-        <p><span class="titleInfoTT">Number of Medals:</span><br> <span id="medalsTT"></span></p>
-        <p><span class="titleInfoTT">Name(s):</span><br> <span id="nameTT"></span></p>
-        <p><span class="titleInfoTT">Country(ies):</span><br> <span id="countryTT"></span></p>
+        <p id="numberAthletes"><strong>Total Number of Athletes:  <span id="allAthletesTT"></span></strong></p>
+        <div id="breakline"></div>
+        <div id="infoPar">
+            <p class="titleInfoTT">Gold Medal Winner(s):</p>
+            <p class="sectionInfoTT">Number of Gold Medals:<br> <span id="medalsTT"></span></p><br>
+            <p class="sectionInfoTT">Name(s):<br> <span id="nameTT"></span></p><br>
+            <p class="sectionInfoTT">Age(s):<br> <span id="ageTT"></span></p><br>
+            <p class="sectionInfoTT">Country(ies):<br> <span id="countryTT"></span></p><br>
+        </div>
     </div>
 </body>
 </html>
