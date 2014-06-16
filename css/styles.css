@@ -133,7 +133,7 @@ svg {
 
 #Sort{
     margin-top: 10px;
-    background: url(../images/filterIcon.png) 4px #323232 no-repeat;
+    background: url(../images/sortIcon.png) 4px #323232 no-repeat;
     text-indent:50px;
     height: 32px;
 }
@@ -180,6 +180,8 @@ svg {
     border: 1px solid white;
     padding: 5px;
     cursor: pointer;
+    background: url(../images/closeIcon.png) 8px no-repeat;
+    background-size: 14px 14px;
 }
 
 #chartAlert {
