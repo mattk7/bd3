@@ -31,10 +31,10 @@
                 widget_sports = []
                 
                 d3.select('#buttons')
-                    .selectAll('button.widget_trigger')
+                    .selectAll('a.widget_trigger')
                     .data(data_by_sport_and_gender)
                     .enter()
-                    .append('button')
+                    .append('a')
                     .attr('class', 'widget_trigger')
                     .attr('id', function(d){
                         return d.key
@@ -44,10 +44,10 @@
                     })
                 
                 d3.select('#buttons')
-                    .selectAll('button.widget_reset')
+                    .selectAll('a.widget_reset')
                     .data(['Reset'])
                     .enter()
-                    .append('button')
+                    .append('a')
                     .attr('class', 'widget_reset')
                     .text(function(d){
                         return d

@@ -107,12 +107,12 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
         .entries(data)
 
 console.log(xValues)
-    function interpY(d) {    
+    function interpY(d, hist) {    
  
         xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
-        console.log('d',d)
-        p1 = stackedData[0].values[xValues.indexOf(xClosest)-1]
-        p2 = stackedData[0].values[xValues.indexOf(xClosest)]
+        console.log('d',d.Weight)
+        p1 = hist[xValues.indexOf(xClosest)-1]
+        p2 = hist[xValues.indexOf(xClosest)]
         function jitterY(p1){
         return p1.y0+p1.y*(.4 + .2* Math.random())
     }
@@ -164,8 +164,9 @@ console.log(xValues)
             return x(d.Weight);
         })
         .attr("cy", function(d){
-            console.log('i', stackedData.filter(function(dd){return (dd.key == d.Sport)}))
-            return interpY(d);
+            var hist = stackedData.filter(function(dd){return (dd.key == d.Sport)})[0]
+            console.log('h',hist.values)
+            return interpY(d, hist.values);
         })
         .attr('r', 5)
 
