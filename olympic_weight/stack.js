@@ -103,37 +103,14 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
     
     // Golds
     var golds = d3.nest()
-        .key(function(d){return d.Gold;})
+        .key(function(d){return d.Sport;})
         .entries(data)
 
-    /* Create the lookup table */
-//    var tableGold = [];
-//    sportWeight.forEach(function(d){
-//        tableGold[d.key] = [];
-//    })
-    
-//    golds.forEach(function(d) {
-//        if (d.key != 0){
-//            d.values.forEach(function(d){
-//                tableGold[d.Sport].push({'Weight': d.Weight});
-//            })
-//        }
-//    });
-//    golds.forEach(function(d) {
-//        if (d.key != 0){
-//            d.values.forEach(function(d){
-//                tableGold.push({'key': d.Sport, 'values': [{'Weight': d.Weight}]});
-//            })
-//        }
-//    });
-
-    var tableGold = stackedData
-    
-    
-    console.log('table',tableGold);
-    
-    function interpY(d) {
+console.log(xValues)
+    function interpY(d) {    
+ 
         xClosest = xValues.filter(function(l){ return d.Weight < l; })[0]
+        console.log('d',d)
         p1 = stackedData[0].values[xValues.indexOf(xClosest)-1]
         p2 = stackedData[0].values[xValues.indexOf(xClosest)]
         function jitterY(p1){
@@ -146,17 +123,21 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
     }
     
     
-    var selectedWeight = data.filter(function(d){
-    selectedKeys=[]
+    var medals = golds.filter(function(d){
+    var selectedKeys=[]
     for(s in widget_sports){
         selectedKeys.push(widget_sports[s].key)
     }
-    return ( selectedKeys.indexOf(d.key) > -1 )
+    if(selectedKeys.length == 0) {
+        return golds;
+    }
+        return ( selectedKeys.indexOf(d.key) > -1 )
     })
     
+
     var medalContainer = temptemp 
         .selectAll('g.sportMedals')
-        .data(tableGold, function(d){ return d.key; });
+        .data(medals, function(d){ return d.key; });
 
     
     var medalsEnter = medalContainer.enter()
@@ -169,30 +150,24 @@ d3.csv('data/olympics_2012_clean.csv', function(data){
         .remove()
     
     
-    
     medalsEnter.selectAll('circle')
         .data(function(d){
-            return d.values
+            onlyGold = d.values.filter(function(dd){
+                return (dd.Gold != 0)
+            })
+            return onlyGold
         })
         .enter()
         .append('circle')
-    
-    medalContainer
-        .each(function(d) {
-            d.values.forEach(function(dd){
-
-                if(dd.Gold != 0) {          
-//console.log('ads',this)
-//                    .append('circle')
-//                    .attr('class', 'gold')
-//                    .attr("cx", x(dd.Weight))
-//                    .attr("cy", interpY(dd))
-//                    .attr('r', 5)
-                }
-
-
-            })    
-        });
+        .attr('class', 'gold')
+        .attr("cx", function(d){
+            return x(d.Weight);
+        })
+        .attr("cy", function(d){
+            console.log('i', stackedData.filter(function(dd){return (dd.key == d.Sport)}))
+            return interpY(d);
+        })
+        .attr('r', 5)
 
 
            //--------  HOVER

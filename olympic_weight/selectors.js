@@ -28,7 +28,7 @@
                         .attr('class', 'widget')
                 }
 // This array contains the objects representing the nations the user selected.
-                var widget_sports = []
+                widget_sports = []
                 
                 d3.select('#buttons')
                     .selectAll('button.widget_trigger')
