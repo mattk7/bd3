@@ -242,20 +242,26 @@ function start() {
                 return countriesArray; 
             }
 
- /*           function getInfoEvent(d,i){
-                sportArray = [];
+        function getInfoAge(d,i){
+                ageArray = [];
                 for (i=0; i<d.values.length; i++){
                     
                     if (d.values[i].Gold){
-                        var eventTTinfo = d.values[i].Event;
-                        sportArray.push(eventTTinfo);
+                        var ageTTinfo = d.values[i].Age;
+                        ageArray.push(ageTTinfo);
                     }
                 }
-                return sportArray; 
+               return ageArray[0]; 
             }
-*/            
+            
+            function getAllAthletes(d,i){
+                
+                console.log(d.values.length)
+                return d.values.length;
+            }
+            
 
-            //Update the tooltip values
+                        //Update the tooltip values
             d3.select("#tooltip")
             .style("left", 960 + "px")
             .style("top", 48 + "px")
@@ -267,14 +273,17 @@ function start() {
             .select("#countryTT")
             .text(getInfoCountry(d))
 
- /*           d3.select("#tooltip")
-            .select("#sportTT")
-            .text(getInfoEvent(d))
-*/
+            d3.select("#tooltip")
+            .select("#ageTT")
+            .text(getInfoAge(d))
+
             d3.select("#tooltip")
             .select("#medalsTT")
             .text(getInfoMedals(d))
-
+            
+            d3.select("#tooltip")
+            .select("#allAthletesTT")
+            .text(getAllAthletes(d))
         });
 
         
