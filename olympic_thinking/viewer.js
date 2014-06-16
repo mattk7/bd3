@@ -18,7 +18,9 @@ function nesting (data){
             return d.Age;
         })
         .sortKeys(d3.ascending)
-        .key(function(d) { return d.Sex; })
+        .key(function(d) { 
+            return d.Sex; 
+        })
         .entries(data);
     return newdata;
 }
@@ -62,9 +64,10 @@ function start() {
     var AXIS_MARGIN = 10;
     
     var COLOR_MALE = '#f9cc8e';
-    var COLOR_FEMALE = '#d6e3a0'
+    var COLOR_FEMALE = '#d6e3a0';
     
     var svg = d3.select('svg');
+
 
     d3.csv('olympics_2012.csv', function (raw_data) {
         var nested_data = nesting(raw_data);
@@ -89,6 +92,7 @@ function start() {
             .orient('bottom')
             .tickValues(d3.range(sport_names.length))
             .tickSize(10)
+            .outerTickSize(0)
             .tickFormat('');
         var axis_x_g = chart.append('g')
             .attr('class', 'axis_x')
@@ -161,7 +165,8 @@ function start() {
             })
             .enter()
             .append('g');
-        
+            
+        //adding the gendered distribution
         genders.append('rect')
         .attr('x', function (d, i) {
                 if (d.key == 'F'){
@@ -186,8 +191,94 @@ function start() {
                     return COLOR_MALE;
                 }
             })
-            ;
-            
+        .on('mouseover', function(d, i) {
+            //gold olymic medals *********************
+            //Get this squares x/y values, then augment for the tooltip
+            /*var coordinates = [0, 0];
+                coordinates = d3.mouse(this);
+                console.log(coordinates);
+
+                var xPositionTT = coordinates[0];
+                var yPositionTT = coordinates[1];
+
+                medals(people).Gold
+                */
+            function getInfoMedals(d,i){
+                goldArray = []
+
+                for (i=0; i<d.values.length; i++){
+                    console.log(d);
+                    if (d.values[i].Gold){
+                        var goldCount = parseFloat(d.values[i].Gold); 
+                        goldArray.push(goldCount);
+                    }
+                }
+                
+                return goldArray.length;
+            }
+
+            function getInfoName(d,i){
+                namesArray = [];
+
+                for (i=0; i<d.values.length; i++){
+                    
+                    if (d.values[i].Gold){
+                        var nameTTinfo = d.values[i].Name;
+                        namesArray.push(nameTTinfo);
+                    }
+                }
+
+                return namesArray;
+            }
+
+            function getInfoCountry(d,i){
+                countriesArray = [];
+                for (i=0; i<d.values.length; i++){
+                    if (d.values[i].Gold){
+                        var countryTTinfo = d.values[i].Country;
+                        countriesArray.push(countryTTinfo);
+                    }
+                } 
+                return countriesArray; 
+            }
+
+ /*           function getInfoEvent(d,i){
+                sportArray = [];
+                for (i=0; i<d.values.length; i++){
+                    
+                    if (d.values[i].Gold){
+                        var eventTTinfo = d.values[i].Event;
+                        sportArray.push(eventTTinfo);
+                    }
+                }
+                return sportArray; 
+            }
+*/            
+
+            //Update the tooltip values
+            d3.select("#tooltip")
+            .style("left", 960 + "px")
+            .style("top", 48 + "px")
+            .style("border", 1)
+            .select("#nameTT")
+            .text(getInfoName(d))
+
+            d3.select("#tooltip")
+            .select("#countryTT")
+            .text(getInfoCountry(d))
+
+ /*           d3.select("#tooltip")
+            .select("#sportTT")
+            .text(getInfoEvent(d))
+*/
+            d3.select("#tooltip")
+            .select("#medalsTT")
+            .text(getInfoMedals(d))
+
+        });
+
+        
+        //adding the gold medal boxes + mouseover info 
         genders
             .append('rect')
             .attr('x', function (d, i) { 
@@ -210,10 +301,70 @@ function start() {
             .attr('height', 2)
             .style('fill', function (d, i) {
                 return "black";
-            });
+            })
 
+        //legend
+        LEGEND_WIDTH = 200
+        WIDTH_RECT = 40
+        HEIGHT_RECT = 25
+        VSPACE = 10
+
+        var legend = chart.append('g')
+        .attr('class','legend')
+        .attr('transform','translate(' + (INNER_WIDTH - LEGEND_WIDTH) + ',0)')
+        .style('font-size','18px')
+        legend.append('rect')
+        .attr('x', 20)
+        .attr('y',0)
+        .attr('width',170)
+        .attr('height',125)
+        .style('fill','white')
+        .style('stroke','gray')
+
+        legend.append('rect')
+        .attr('x', 30)
+        .attr('y', 10)
+        .attr('width', WIDTH_RECT)
+        .attr('height', HEIGHT_RECT)
+        .style('fill', COLOR_FEMALE)
+
+        legend.append('text')
+        .attr('x', 80)
+        .attr('y', 29)
+        .text('Females \u2640')
+        .style('fill',COLOR_FEMALE)
+
+        legend.append('rect')
+        .attr('x', 30)
+        .attr('y', 50)
+        .attr('width', WIDTH_RECT)
+        .attr('height', HEIGHT_RECT)
+        .style('fill',COLOR_MALE)
+
+        legend.append('text')
+        .attr('x', 80)
+        .attr('y', 34 + HEIGHT_RECT + VSPACE)
+        .text('Males \u2642')
+        .style('fill',COLOR_MALE)
+
+        legend.append('rect')
+        .attr('x', 30)
+        .attr('y', 90)
+        .attr('width', WIDTH_RECT)
+        .attr('height', HEIGHT_RECT)
+        .style('fill','black')
+
+        legend.append('text')
+        .attr('x', 80)
+        .attr('y', 39 + 2*HEIGHT_RECT + 2*VSPACE)
+        .text('Gold medals')
+        .style('fill','black')
     });
 };
 
 // Start the viewer after all the libs load.
 $(start);
+
+/* 
+
+*/
